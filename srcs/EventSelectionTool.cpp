@@ -3,10 +3,13 @@
 
 namespace selection{
   
-  void EventSelectionTool::Test(){
+  void LoadEventList(const std::string file_name){
+  
+    TFile f(file_name.c_str());
 
-    std::cout << " Testiiinnngggg" << std::endl;
+    TTree *event_tree = (TTree*) f.Get("event_tree");
 
+  
   }
 
 } // namespace: selection

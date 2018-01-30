@@ -4,9 +4,8 @@ using namespace selection;
 
 int MainTest(){
 
-
-  EventSelectionTool::Test();
+  std::string filename = "/hepstore/rjones/Samples/LArSoft_reconstruction_temp/tree_test.root";
 
   return 0;
 
-}
+} // MainTest()
