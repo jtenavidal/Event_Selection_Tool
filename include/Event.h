@@ -2,6 +2,7 @@
 #define EVENT_H
 
 #include "Particle.h"
+#include "TVector3.h"
 #include <map>
 
 namespace selection{
@@ -25,8 +26,10 @@ namespace selection{
        * @param  nuance the nuance code corresponding to the event
        * @param  primary_lepton_pdg pdg code of the primary lepton
        * @param  is_cc is this a charged or neutral current event
+       * @param  mc_vertex Monte Carlo neutrino vertex 
+       * @param  reco_vertex reconstructed neutrino vertex
        */
-      Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const int primary_lepton_pdg, const bool is_cc);
+      Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const int primary_lepton_pdg, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex);
         
       /**
        * @brief  CountMCParticlesWithPdg
@@ -89,6 +92,16 @@ namespace selection{
        */
       bool GetIsCC() const;
 
+      /**
+       * @brief  Get the Monte Carlo neutrino vertex position
+       */
+      TVector3 GetMCNuVertex() const;
+
+      /**
+       * @brief  Get the reconstructed neutrino vertex position
+       */
+      TVector3 GetRecoNuVertex() const;
+
     private : 
 
       /**
@@ -115,6 +128,8 @@ namespace selection{
       const unsigned int m_nuance;             ///< Nuance code/interaction of the event
       const int          m_primary_lepton_pdg; ///< pdg code of the primary lepton
       const bool         m_is_cc;              ///< whether the event contains and CC or NC interaction
+      const TVector3     m_reco_vertex;        ///< reconstructed neutrino vertex
+      const TVector3     m_mc_vertex;          ///< reconstructed neutrino vertex
 
 
   }; // Event

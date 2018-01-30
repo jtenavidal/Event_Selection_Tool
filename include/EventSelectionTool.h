@@ -1,15 +1,9 @@
-// Hel  per class 
-//    Static member functions only
-//
-//    No constructor
-//    No member data
-//
 #ifndef EVENT_SELECTION_TOOL_H
 #define EVENT_SELECTION_TOOL_H
 
 #include <string>
 #include <vector>
-#include <pair>
+#include <utility>
 #include "TTree.h"
 #include "TFile.h"
 #include "TVector3.h"
@@ -18,18 +12,22 @@
 
 namespace selection{
  
-  typedef std::vector<std::pair<int,int>> UniqueEventIdList;
-  typedef std::vector<Particle>           ParticleList;
-  typedef std::vector<Event>              EventList;
-  typedef std::vector<Track>              TrackList;
-  typedef std::vector<Shower>             ShowerList;
-
   /**
    * @brief  EventSelectionTool helper class
    */
   class EventSelectionTool {
 
+    private : 
+      class Track;
+      class Shower;
+
     public : 
+
+      typedef std::vector<std::pair<int,int> > UniqueEventIdList;
+      typedef std::vector<Particle>            ParticleList;
+      typedef std::vector<Event>               EventList;
+      typedef std::vector<Track>               TrackList;
+      typedef std::vector<Shower>              ShowerList;
 
       /**
        * @brief  load the list of events to analyse from the root file
@@ -38,7 +36,7 @@ namespace selection{
        * @param  event_list vector of events to fill
        *
        */
-      static void LoadEventList(const std::string &file_name, EventList &event_list);
+      //static void LoadEventList(const std::string &file_name, EventList &event_list);
 
     private : 
 
@@ -49,7 +47,7 @@ namespace selection{
        * @param  unique_event_list list of unique events to fill
        *
        */
-      static void GetUniqueEventList(const TTree &event_tree, UniqueEventIdList &unique_event_list);
+      //static void GetUniqueEventList(const TTree &event_tree, UniqueEventIdList &unique_event_list);
 
       /**
        * @brief  get the list of track objects
@@ -59,7 +57,7 @@ namespace selection{
        * @param  track_list vector of tracks to fill
        *
        */
-      static void GetTrackList(const TTree &track_tree, const UniqueEventIdList &unique_event_list, TrackList &track_list);
+      //static void GetTrackList(const TTree &track_tree, const UniqueEventIdList &unique_event_list, TrackList &track_list);
 
       /**
        * @brief  get the list of shower objects
@@ -69,7 +67,7 @@ namespace selection{
        * @param  shower_list vector of showers to fill
        *
        */
-      static void GetShowerList(const TTree &shower_tree, const UniqueEventIdList &unique_event_list, ShowerList &shower_list);
+      //static void GetShowerList(const TTree &shower_tree, const UniqueEventIdList &unique_event_list, ShowerList &shower_list);
  
       /**
        * @brief  get the list of mc particle objects
@@ -79,7 +77,7 @@ namespace selection{
        * @param  mc particle_list vector of mc particles to fill
        *
        */
-      static void GetMCParticleList(const TTree &mcparticle_tree, const UniqueEventIdList &unique_event_list, ParticleList &mcparticle_list);
+      //static void GetMCParticleList(const TTree &mcparticle_tree, const UniqueEventIdList &unique_event_list, ParticleList &mcparticle_list);
 
       /**
        * @brief  get a list of reconstructed particles from track objects
@@ -94,11 +92,32 @@ namespace selection{
        * @brief  get a list of reconstructed particles from shower objects
        *
        * @param  shower_list list of showers in the event
+       * @param  reco_vertex the reconstructed neutrino vertex
        * @param  recoparticle_list particle list to fill
        *
        */
-      static void GetRecoParticleFromShower(const ShowerList &shower_list, ParticleList &recoparticle_list);
+      static void GetRecoParticleFromShower(const ShowerList &shower_list, const TVector3 &reco_vertex, ParticleList &recoparticle_list);
 
+      /**
+       * @brief  get the particle id based on its chi2 value
+       *
+       * @param  track the track to find the pdg of
+       *
+       * @return pdg
+       *
+       */
+      static int GetPdgByChi2(const Track &track);
+      
+      /**
+       * @brief  get the particle id based on its PIDA value
+       *
+       * @param  track the track to find the pdg of
+       *
+       * @return pdg
+       *
+       */
+      static int GetPdgByPIDA(const Track &track);
+      
       /**
        * @brief  Track class 
        */

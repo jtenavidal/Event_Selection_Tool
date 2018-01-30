@@ -2,12 +2,14 @@
 
 namespace selection{
   
-  Event::Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const int primary_lepton_pdg, const bool is_cc) :
+  Event::Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const int primary_lepton_pdg, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex) :
     m_mc_particles(mc_particles),
     m_reco_particles(reco_particles),
     m_nuance(nuance),
     m_primary_lepton_pdg(primary_lepton_pdg),
-    m_is_cc(is_cc){}
+    m_is_cc(is_cc),
+    m_mc_vertex(mc_vertex),
+    m_reco_vertex(reco_vertex) {}
 
   //------------------------------------------------------------------------------------------ 
     
@@ -77,6 +79,22 @@ namespace selection{
   bool Event::GetIsCC() const{
   
     return m_is_cc;
+  
+  }
+
+  //------------------------------------------------------------------------------------------ 
+
+  TVector3 Event::GetMCNuVertex() const{
+  
+    return m_mc_vertex;
+  
+  }
+
+  //------------------------------------------------------------------------------------------ 
+
+  TVector3 Event::GetRecoNuVertex() const{
+  
+    return m_reco_vertex;
   
   }
 
