@@ -16,6 +16,8 @@ gROOT->ProcessLine(".L source_files/main_cc0pi.cpp+");
 *
 */
 
-gROOT->ProcessLine(".L srcs/EventSelectionTool.cpp+");
-gROOT->ProcessLine(".L test/MainTest.cpp+");
+gROOT->ProcessLine(".L srcs/Particle.cpp+");
+gROOT->ProcessLine(".L srcs/Event.cpp+");
+//gROOT->ProcessLine(".L srcs/EventSelectionTool.cpp+");
+//gROOT->ProcessLine(".L test/MainTest.cpp+");
 }

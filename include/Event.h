@@ -2,6 +2,7 @@
 #define EVENT_H
 
 #include "Particle.h"
+#include <map>
 
 namespace selection{
   
@@ -34,7 +35,7 @@ namespace selection{
        *
        * @return number of Monte Carlo particles with the given pdg code
        */
-      unsigned int CountMCParticlesWithPdg(const unsigned int pdg) const;
+      unsigned int CountMCParticlesWithPdg(const int pdg) const;
 
       /**
        * @brief  CountRecoParticlesWithPdg
@@ -43,7 +44,7 @@ namespace selection{
        *
        * @return number of reconstructed partices with the given pdg code
        */
-      unsigned int CountRecoParticlesWithPdg(const unsigned int pdg) const;
+      unsigned int CountRecoParticlesWithPdg(const int pdg) const;
 
       /**
        * @brief  CheckMCTopology
@@ -97,7 +98,7 @@ namespace selection{
        *
        * @return number of partices with the given pdg code
        */
-      unsigned int CountParticlesWithPdg(const unsigned int pdg, const ParticleList &particle_list) const;
+      unsigned int CountParticlesWithPdg(const int pdg, const ParticleList &particle_list) const;
       
       /**
        * @brief  CheckTopology
