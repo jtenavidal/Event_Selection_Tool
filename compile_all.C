@@ -14,5 +14,8 @@ gROOT->ProcessLine(".L source_files/run_all_per_signal.cpp+");
 gROOT->ProcessLine(".L source_files/main_cc0pi.cpp+");
 *
 *
-* /
+*/
+
+gROOT->ProcessLine(".L srcs/EventSelectionTool.cpp+");
+gROOT->ProcessLine(".L test/MainTest.cpp+");
 }

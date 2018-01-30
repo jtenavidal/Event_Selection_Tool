@@ -5,4 +5,9 @@ Takes in trees containing information about reconstructed and true SBND events, 
 This file will act as documentation for the repository
 
 # How to run
-Fill `root -lb compile_all.C` with the source-code and main file paths in order to compile them in the correct order (based on dependencies) and run the main (put it at the end of the list)
+Fill `compile_all.C` with the source-code and main file paths in order to compile them in the correct order (based on dependencies) and run the main (put it at the end of the list)
+
+Once this has compiled and you are within ROOT, type the name of the main function to run
+
+# Notes
+Everything must be contained within a namespace in order to link correctly
