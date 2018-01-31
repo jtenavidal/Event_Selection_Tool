@@ -24,12 +24,11 @@ namespace selection{
        * @param  mc_particles list of the MC particle objects in the event
        * @param  reco_particles list of the reconstructed particle objects in the event
        * @param  nuance the nuance code corresponding to the event
-       * @param  primary_lepton_pdg pdg code of the primary lepton
        * @param  is_cc is this a charged or neutral current event
        * @param  mc_vertex Monte Carlo neutrino vertex 
        * @param  reco_vertex reconstructed neutrino vertex
        */
-      Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const int primary_lepton_pdg, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex);
+      Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex);
         
       /**
        * @brief  CountMCParticlesWithPdg
@@ -83,11 +82,6 @@ namespace selection{
       int GetNuanceCode() const;
 
       /**
-       * @brief  Get the pdg code of the primary lepton
-       */
-      int GetPrimaryLeptonPdg() const;
-
-      /**
        * @brief  Get if the event is CC or NC
        */
       bool GetIsCC() const;
@@ -125,11 +119,10 @@ namespace selection{
       // Member variables
       ParticleList       m_mc_particles;       ///< vector of Monte Carlo particles
       ParticleList       m_reco_particles;     ///< vector of reconstructed particles
-      const unsigned int m_nuance;             ///< Nuance code/interaction of the event
-      const int          m_primary_lepton_pdg; ///< pdg code of the primary lepton
-      const bool         m_is_cc;              ///< whether the event contains and CC or NC interaction
-      const TVector3     m_reco_vertex;        ///< reconstructed neutrino vertex
-      const TVector3     m_mc_vertex;          ///< reconstructed neutrino vertex
+      unsigned int       m_nuance;             ///< Nuance code/interaction of the event
+      bool               m_is_cc;              ///< whether the event contains and CC or NC interaction
+      TVector3           m_reco_vertex;        ///< reconstructed neutrino vertex
+      TVector3           m_mc_vertex;          ///< reconstructed neutrino vertex
 
 
   }; // Event

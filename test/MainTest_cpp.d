@@ -49,5 +49,23 @@
 ./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMap.h
 ./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/THashTable.h
 ./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TUrl.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TVector3.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TError.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TVector2.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrix.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixF.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixT.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixTBase.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixFBasefwd.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixDBasefwd.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TVectorFfwd.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TVectorDfwd.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixTUtils.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixFfwd.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixFUtils.h
+./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixFUtilsfwd.h
+./test/MainTest_cpp.so: /hepstore/rjones/Exercises/Event_Selection_Tool/./include/Event.h
+./test/MainTest_cpp.so: /hepstore/rjones/Exercises/Event_Selection_Tool/./include/Particle.h
+./test/MainTest_cpp.so: /hepstore/rjones/Exercises/Event_Selection_Tool/./include/Event.h
 ./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/cintdictversion.h /hepstore/rjones/Software/ROOT/Install/include/root/RVersion.h
 MainTest_cpp__ROOTBUILDVERSION= 5.34/36

@@ -36,7 +36,7 @@ namespace selection{
        * @param  event_list vector of events to fill
        *
        */
-      //static void LoadEventList(const std::string &file_name, EventList &event_list);
+      static void LoadEventList(const std::string &file_name, EventList &event_list);
 
     private : 
 
@@ -47,7 +47,7 @@ namespace selection{
        * @param  unique_event_list list of unique events to fill
        *
        */
-      //static void GetUniqueEventList(const TTree &event_tree, UniqueEventIdList &unique_event_list);
+      static void GetUniqueEventList(TTree *event_tree, UniqueEventIdList &unique_event_list);
 
       /**
        * @brief  get the list of track objects
@@ -57,7 +57,7 @@ namespace selection{
        * @param  track_list vector of tracks to fill
        *
        */
-      //static void GetTrackList(const TTree &track_tree, const UniqueEventIdList &unique_event_list, TrackList &track_list);
+      static void GetTrackList(TTree *track_tree, const std::pair<int, int> &unique_event, TrackList &track_list);
 
       /**
        * @brief  get the list of shower objects
@@ -67,8 +67,8 @@ namespace selection{
        * @param  shower_list vector of showers to fill
        *
        */
-      //static void GetShowerList(const TTree &shower_tree, const UniqueEventIdList &unique_event_list, ShowerList &shower_list);
- 
+      static void GetShowerList(TTree *shower_tree, const std::pair<int, int> &unique_event, ShowerList &shower_list);
+      
       /**
        * @brief  get the list of mc particle objects
        *
@@ -77,8 +77,9 @@ namespace selection{
        * @param  mc particle_list vector of mc particles to fill
        *
        */
-      //static void GetMCParticleList(const TTree &mcparticle_tree, const UniqueEventIdList &unique_event_list, ParticleList &mcparticle_list);
+      static void GetMCParticleList(TTree *mcparticle_tree, const std::pair<int, int> &unique_event, ParticleList &mcparticle_list);
 
+ 
       /**
        * @brief  get a list of reconstructed particles from track objects
        *
@@ -165,18 +166,18 @@ namespace selection{
            * @brief  Constructor
            *
            * @param  vertex vertex of the shower
-           * @param  end end point of the shower
            * @param  direction direction of the shower
            * @param  open_angle opening angle at the vertex of the shower
+           * @param  length length of the shower
            *
            */
-          Shower(const TVector3 &vertex, const TVector3 &end, const TVector3 &direction, const float &open_angle);
+          Shower(const TVector3 &vertex, const TVector3 &direction, const float &open_angle, const float &length);
 
           // Member variables
           TVector3 m_vertex;     ///< vertex of the shower 
-          TVector3 m_end;        ///< end of the shower
           TVector3 m_direction;  ///< direction of the shower
           float    m_open_angle; ///< opening angle at the vertex of the shower
+          float    m_length;     ///< length of the shower
 
       }; // Shower
 
