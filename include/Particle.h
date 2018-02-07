@@ -73,6 +73,11 @@ namespace selection{
       float GetEnergy() const;
 
       /**
+       * @brief  Get the length
+       */
+      float GetLength() const;
+
+      /**
        * @brief  Get the vertex
        */
       TVector3 GetVertex() const;

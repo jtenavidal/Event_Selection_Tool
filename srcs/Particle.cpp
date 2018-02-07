@@ -96,6 +96,13 @@ namespace selection{
 
   //------------------------------------------------------------------------------------------ 
   
+  float Particle::GetLength() const{
+  
+    return m_length;
+
+  }
+  //------------------------------------------------------------------------------------------ 
+  
   TVector3 Particle::GetVertex() const{
   
     return m_vertex;
