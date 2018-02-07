@@ -1,7 +1,11 @@
 #include "../include/EventSelectionTool.h"
 #include <iostream>
+#include <numeric>
 #include "TLeaf.h"
 #include "TBranch.h"
+#include "TVector3.h"
+#include <algorithm>
+#include <iterator>
 
 namespace selection{
  
@@ -13,69 +17,49 @@ namespace selection{
     TTree *t_track    = (TTree*) f.Get("recotrack_tree");
     TTree *t_shower   = (TTree*) f.Get("recoshower_tree");
 
-    UniqueEventIdList unique_event_list;
-    EventSelectionTool::GetUniqueEventList(t_event, unique_event_list);
-
+    TBranch *b_event_id = t_event->GetBranch("event_id");
+    TBranch *b_time_now = t_event->GetBranch("time_now");
+    TBranch *b_r_vertex = t_event->GetBranch("r_vertex");
+    TBranch *b_t_vertex = t_event->GetBranch("t_vertex");
+    TBranch *b_t_nuance = t_event->GetBranch("t_interaction");
+    TBranch *b_t_iscc   = t_event->GetBranch("t_iscc");
+      
     unsigned int n_events = t_event->GetEntries();
 
-    for(unsigned int i = 0; i < unique_event_list.size(); ++i){
+    for(unsigned int j = 0; j < n_events; ++j){
     
       ParticleList mcparticles;
       ParticleList recoparticles;
       TrackList    tracks;
       ShowerList   showers;
 
-      TBranch *b_event_id = t_event->GetBranch("event_id");
-      TBranch *b_time_now = t_event->GetBranch("time_now");
-      TBranch *b_r_vertex = t_event->GetBranch("r_vertex");
-      TBranch *b_t_vertex = t_event->GetBranch("t_vertex");
-      TBranch *b_t_nuance = t_event->GetBranch("t_interaction");
-      TBranch *b_t_iscc   = t_event->GetBranch("t_iscc");
-      
-      double temp_r_vertex[3];
-      double temp_t_vertex[3];
+      TVector3 r_vertex, t_vertex;
       unsigned int nuance = std::numeric_limits<unsigned int>::max();
       bool iscc(false);
 
-      bool foundEvent(false);
+      t_event->GetEntry(j);
 
-      for(unsigned int j = 0; j < n_events; ++j){
-     
-        t_event->GetEntry(j);
+      int event_id = b_event_id->GetLeaf("event_id")->GetValue();
+      int time_now = b_time_now->GetLeaf("time_now")->GetValue();
+      r_vertex[0]  = b_r_vertex->GetLeaf("r_vertex")->GetValue(0);
+      r_vertex[1]  = b_r_vertex->GetLeaf("r_vertex")->GetValue(1);
+      r_vertex[2]  = b_r_vertex->GetLeaf("r_vertex")->GetValue(2);
+      t_vertex[0]  = b_t_vertex->GetLeaf("t_vertex")->GetValue(0);
+      t_vertex[1]  = b_t_vertex->GetLeaf("t_vertex")->GetValue(1);
+      t_vertex[2]  = b_t_vertex->GetLeaf("t_vertex")->GetValue(2);
+      nuance       = b_t_nuance->GetLeaf("t_interaction")->GetValue();
+      iscc         = b_t_iscc->GetLeaf("t_iscc")->GetValue();
+   
+      std::pair<int,int> event_identification(event_id,time_now);
 
-        int event_id = b_event_id->GetLeaf("event_id")->GetValue();
-        int time_now = b_time_now->GetLeaf("time_now")->GetValue();
-        
-        if(event_id != unique_event_list[i].first || time_now != unique_event_list[i].second) continue;
-
-        foundEvent = true;
-
-        temp_r_vertex[0]       = b_r_vertex->GetLeaf("r_vertex")->GetValue(0);
-        temp_r_vertex[1]       = b_r_vertex->GetLeaf("r_vertex")->GetValue(1);
-        temp_r_vertex[2]       = b_r_vertex->GetLeaf("r_vertex")->GetValue(2);
-        temp_t_vertex[0]       = b_t_vertex->GetLeaf("t_vertex")->GetValue(0);
-        temp_t_vertex[1]       = b_t_vertex->GetLeaf("t_vertex")->GetValue(1);
-        temp_t_vertex[2]       = b_t_vertex->GetLeaf("t_vertex")->GetValue(2);
-        nuance                 = b_t_nuance->GetLeaf("t_interaction")->GetValue();
-        iscc                   = b_t_iscc->GetLeaf("t_iscc")->GetValue();
-      
-        break;
-
-      }
-
-      if(!foundEvent) throw 3;
-      
-      TVector3 r_vertex(temp_r_vertex);
-      TVector3 t_vertex(temp_t_vertex);
-
-      EventSelectionTool::GetTrackList(t_track, unique_event_list[i], tracks);
-      EventSelectionTool::GetShowerList(t_shower, unique_event_list[i], showers);
-      EventSelectionTool::GetMCParticleList(t_particle, unique_event_list[i], mcparticles);
+      EventSelectionTool::GetTrackList(t_track,         event_identification, tracks);
+      EventSelectionTool::GetShowerList(t_shower,       event_identification, showers);
+      EventSelectionTool::GetMCParticleList(t_particle, event_identification, mcparticles);
       EventSelectionTool::GetRecoParticleFromTrack(tracks, recoparticles);
       EventSelectionTool::GetRecoParticleFromShower(showers, r_vertex, recoparticles);
-
+      
       event_list.push_back(Event(mcparticles, recoparticles, nuance, iscc, t_vertex, r_vertex));
-   
+
     }
   }
 
@@ -136,11 +120,14 @@ namespace selection{
     
       track_tree->GetEntry(i);
 
+      int event_id         = b_event_id->GetLeaf("event_id")->GetValue();
+      int time_now         = b_time_now->GetLeaf("time_now")->GetValue();
+      
+      if(event_id != unique_event.first || time_now != unique_event.second) continue;
+      
       double temp_vertex[3];
       double temp_end[3];
       
-      int event_id         = b_event_id->GetLeaf("event_id")->GetValue();
-      int time_now         = b_time_now->GetLeaf("time_now")->GetValue();
       temp_vertex[0]       = b_vertex->GetLeaf("tr_vertex")->GetValue(0);
       temp_vertex[1]       = b_vertex->GetLeaf("tr_vertex")->GetValue(1);
       temp_vertex[2]       = b_vertex->GetLeaf("tr_vertex")->GetValue(2);
@@ -158,10 +145,9 @@ namespace selection{
       TVector3 vertex(temp_vertex);
       TVector3 end(temp_end);
 
-      if(event_id == unique_event.first && time_now == unique_event.second)
-        track_list.push_back(Track(pida, chi2_mu, chi2_pi, chi2_pr, chi2_ka, length, kinetic_energy, vertex, end));
+      track_list.push_back(Track(pida, chi2_mu, chi2_pi, chi2_pr, chi2_ka, length, kinetic_energy, vertex, end));
+    
     } 
-  
   }
   //------------------------------------------------------------------------------------------ 
   
@@ -180,11 +166,14 @@ namespace selection{
     
       shower_tree->GetEntry(i);
 
+      int event_id      = b_event_id->GetLeaf("event_id")->GetValue();
+      int time_now      = b_time_now->GetLeaf("time_now")->GetValue();
+      
+      if(event_id != unique_event.first || time_now != unique_event.second) continue;
+      
       double temp_vertex[3];
       double temp_direction[3];
       
-      int event_id      = b_event_id->GetLeaf("event_id")->GetValue();
-      int time_now      = b_time_now->GetLeaf("time_now")->GetValue();
       temp_vertex[0]    = b_vertex->GetLeaf("sh_start")->GetValue(0);
       temp_vertex[1]    = b_vertex->GetLeaf("sh_start")->GetValue(1);
       temp_vertex[2]    = b_vertex->GetLeaf("sh_start")->GetValue(2);
@@ -197,10 +186,8 @@ namespace selection{
       TVector3 vertex(temp_vertex);
       TVector3 direction(temp_direction);
 
-      if(event_id == unique_event.first && time_now == unique_event.second)
-        shower_list.push_back(Shower(vertex, direction, open_angle, length));
+      shower_list.push_back(Shower(vertex, direction, open_angle, length));
     } 
-  
   }
 
   //------------------------------------------------------------------------------------------ 
@@ -221,13 +208,16 @@ namespace selection{
     for(unsigned int i = 0; i < n_entries; ++i){
     
       mcparticle_tree->GetEntry(i);
+      
+      int event_id          = b_event_id->GetLeaf("event_id")->GetValue();
+      int time_now          = b_time_now->GetLeaf("time_now")->GetValue();
+      
+      if(event_id != unique_event.first || time_now != unique_event.second) continue;
 
       double temp_vertex[3];
       double temp_end[3];
       double temp_momentum[3];
       
-      int event_id          = b_event_id->GetLeaf("event_id")->GetValue();
-      int time_now          = b_time_now->GetLeaf("time_now")->GetValue();
       int pdgcode           = b_pdgcode->GetLeaf("p_pdgcode")->GetValue();
       float mass            = b_mass->GetLeaf("p_mass")->GetValue();
       float energy          = b_energy->GetLeaf("p_energy")->GetValue();
@@ -245,16 +235,8 @@ namespace selection{
       TVector3 end(temp_end);
       TVector3 momentum(temp_momentum);
 
-      if(event_id == unique_event.first && time_now == unique_event.second)
-        mcparticle_list.push_back(Particle(pdgcode, mass, energy, vertex, end, momentum));
+      mcparticle_list.push_back(Particle(pdgcode, mass, energy, vertex, end, momentum));
       
-      /*
-      std::cout << "-------------------------------------------------------------------------" << std::endl;
-      std::cout << " Event   : " << event_id  << std::endl;
-      std::cout << " PdgCode : " << pdgcode   << std::endl;
-      std::cout << " Vertex  : " << vertex[0] << std::endl;
-      std::cout << " End     : " << end[0]    << std::endl;
-      */
     }
   }
 
@@ -276,15 +258,15 @@ namespace selection{
       if(pida_pdg == 13) 
         mu_candidates.push_back(id);
       else if(pida_pdg == 211 || pida_pdg == 321 || pida_pdg == 2212) 
-        recoparticle_list.push_back(Particle(pida_pdg, track.m_kinetic_energy, track.m_vertex, track.m_end));
+        recoparticle_list.push_back(Particle(pida_pdg, track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end));
       else
-        recoparticle_list.push_back(Particle(EventSelectionTool::GetPdgByChi2(track), track.m_kinetic_energy, track.m_vertex, track.m_end)); 
+        recoparticle_list.push_back(Particle(EventSelectionTool::GetPdgByChi2(track), track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end)); 
     }
 
     if(mu_candidates.size() == 0) return;
     if(mu_candidates.size() == 1) {
       const Track &muon(track_list[mu_candidates[0]]);
-      recoparticle_list.push_back(Particle(13, muon.m_kinetic_energy, muon.m_vertex, muon.m_end));
+      recoparticle_list.push_back(Particle(13, muon.m_kinetic_energy, muon.m_length, muon.m_vertex, muon.m_end));
       return;
     }
    
@@ -328,14 +310,14 @@ namespace selection{
     } 
     
     const Track &muon(track_list[muonID]);
-    recoparticle_list.push_back(Particle(13, muon.m_kinetic_energy, muon.m_vertex, muon.m_end));
+    recoparticle_list.push_back(Particle(13, muon.m_kinetic_energy, muon.m_length, muon.m_vertex, muon.m_end));
 
     for(unsigned int id = 0; id < mu_candidates.size(); ++id){
       
       if(id == muonID) continue;
       
       const Track &track(track_list[id]);
-      recoparticle_list.push_back(Particle(EventSelectionTool::GetPdgByChi2(track), track.m_kinetic_energy, track.m_vertex, track.m_end)); 
+      recoparticle_list.push_back(Particle(EventSelectionTool::GetPdgByChi2(track), track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end)); 
     } 
   }
 
@@ -346,8 +328,94 @@ namespace selection{
     // To start with, 
     //  If an event has 2 showers
     //  Push back a pi0 at that point
-    if(shower_list.size() == 2) recoparticle_list.push_back(Particle(111,reco_vertex,reco_vertex));
- 
+    //if(shower_list.size() == 2) recoparticle_list.push_back(Particle(111,reco_vertex,reco_vertex));
+    
+    // New method
+    // Calculate distance of closest approach between 2 photon showers 
+
+    // There must be at least 2 showers
+    if(shower_list.size() <= 2) return;
+
+    std::vector<unsigned int> used_photon;
+    used_photon.clear();
+
+    // Loop over showers
+    for(unsigned int i = 0; i < shower_list.size(); ++i){
+
+      // Vector to hold 'j' values of candidate photon to pair with current photon
+      // Vector to hold to position at which the photons meet to call it the point at which
+      // the pi0 decayed
+      // Vector to hold the distance of closest approach, in order to minimise this
+      std::vector<unsigned int> candidate_id_for_pair;
+      std::vector<TVector3> decay_point;
+      std::vector<float> c_distance;
+      candidate_id_for_pair.clear();
+      decay_point.clear();
+      c_distance.clear();
+
+      for( unsigned int j = i+1; j < shower_list.size(); ++j){
+        // If we are only looking at a single photon, continue
+        if(i==j) continue;
+
+        // If the photon has already been assigned to a pi0
+        for(unsigned int k = 0; k < used_photon.size(); ++k) if(used_photon[k] == j) continue;
+    
+        // Get the distance of closest approach of the current two showers we are looking at
+        TVector3 dir_1, dir_2, start_1, start_2, link;
+
+        dir_1   = shower_list[i].m_direction;
+        dir_2   = shower_list[j].m_direction;
+        start_1 = shower_list[i].m_vertex;
+        start_2 = shower_list[j].m_vertex;
+        link    = start_1 - start_2;
+        
+        float a = dir_1.Dot(dir_1); 
+        float b = dir_1.Dot(dir_2); 
+        float c = dir_2.Dot(dir_2); 
+        float d = dir_1.Dot(link); 
+        float e = dir_2.Dot(link);
+        float denomenator = a*c - b*b;
+
+        // If the lines are parallel
+        if(denomenator == 0) continue;
+
+        float m_closest = (b*e - c*d)/denomenator;
+        float n_closest = (a*e - b*d)/denomenator;
+
+        TVector3 d_closest  = link + ((b*e - c*d)*dir_1 - (a*e - b*d)*dir_2)*(1/denomenator);
+        float mag_d_closest =  d_closest.Mag();
+
+        TVector3 d_middle   = (start_1 + m_closest*dir_1) + 0.5*d_closest;
+
+        // If the distance of closest approach is smaller than 15 cm call it a candidate
+        if(mag_d_closest < 15) { 
+          candidate_id_for_pair.push_back(j);
+          decay_point.push_back(d_closest);
+          c_distance.push_back(mag_d_closest);
+        }
+
+      }
+  
+      if(candidate_id_for_pair.size() == 0) continue;
+      if(candidate_id_for_pair.size() == 1){
+      
+        // If the location with respect to the neutrino vertex at which the photons 
+        // were produced by the candidate pi0 is more than 15 cm continue
+        if((reco_vertex - decay_point[0]).Mag() > 15) continue;
+
+        // push back a pi0 corresponding to the two photons
+        recoparticle_list.push_back(Particle(111,reco_vertex,decay_point[0]));
+      } 
+      else{
+      
+        // Find the minimum distance
+        std::vector<float>::iterator min = std::min_element(c_distance.begin(), c_distance.end());
+        TVector3 best_decay_point = decay_point[std::distance(c_distance.begin(), min)];
+        recoparticle_list.push_back(Particle(111,reco_vertex,best_decay_point));
+        used_photon.push_back(candidate_id_for_pair[std::distance(c_distance.begin(), min)]);
+      
+      }
+    }
   }
 
   //------------------------------------------------------------------------------------------ 

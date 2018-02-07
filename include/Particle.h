@@ -32,11 +32,12 @@ namespace selection{
        *
        * @param  pdg of the particle
        * @param  kinetic_energy total energy of the particle
+       * @param  length length of the particle
        * @param  vertex start point of the track
        * @param  end end of the track
        *
        */
-      Particle(const int pdg, const float kinetic_energy, const TVector3 &vertex, const TVector3 &end);
+      Particle(const int pdg, const float kinetic_energy, const float length, const TVector3 &vertex, const TVector3 &end);
 
       /**
        * @brief  Constructor for reconstructed showers 
@@ -97,6 +98,7 @@ namespace selection{
       int      m_pdg;             ///< pdg code
       float    m_mass;            ///< mass of the particle
       float    m_energy;          ///< energy of the particle
+      float    m_length;          ///< energy of the particle
       bool     m_has_calorimetry; ///< whether or not the particle has calorimetry
       TVector3 m_vertex;          ///< particle start position
       TVector3 m_end;             ///< particle end position

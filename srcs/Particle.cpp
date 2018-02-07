@@ -13,12 +13,15 @@ namespace selection{
     m_has_calorimetry(true),
     m_vertex(vertex),
     m_end(end),
-    m_momentum(momentum){}
+    m_momentum(momentum){
+      m_length = sqrt(pow(end[0] - vertex[0], 2) + pow(end[1] - vertex[1], 2) + pow(end[0] - vertex[0], 2));
+    }
 
   //------------------------------------------------------------------------------------------ 
   
-  Particle::Particle(const int pdg, const float kinetic_energy, const TVector3 &vertex, const TVector3 &end) :
+  Particle::Particle(const int pdg, const float kinetic_energy, const float length, const TVector3 &vertex, const TVector3 &end) :
     m_pdg(pdg),
+    m_length(length),
     m_has_calorimetry(true),
     m_vertex(vertex),
     m_end(end){
@@ -40,7 +43,10 @@ namespace selection{
     m_mass(this->GetMassFromPdg(pdg)),
     m_has_calorimetry(false),
     m_vertex(vertex),
-    m_end(end){}
+    m_end(end){
+      m_length = sqrt(pow(end[0] - vertex[0], 2) + pow(end[1] - vertex[1], 2) + pow(end[0] - vertex[0], 2));
+    }
+
   
   //------------------------------------------------------------------------------------------ 
   

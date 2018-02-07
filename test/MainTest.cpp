@@ -1,15 +1,31 @@
 #include "../include/EventSelectionTool.h"
 #include "../include/Event.h"
 #include <iostream>
+#include <numeric>
+#include <time.h>
+#include "TVector3.h"
 
 using namespace selection;
 
 int MainTest(){
+  
+  time_t rawtime;
+  struct tm * timeinfo;
+  time (&rawtime);
+  timeinfo = localtime (&rawtime);
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " Start: Local time and date:  " << asctime(timeinfo) << std::endl;
+  std::cout << " 100 sample " << std::endl;
 
-  std::string filename = "/hepstore/rjones/Samples/LArSoft_reconstruction_temp/30_tree_test.root";
+  std::string filename = "/hepstore/rjones/Samples/FNAL/analysis_trees/analysis_trees_100.root";
 
   EventSelectionTool::EventList events;
   EventSelectionTool::LoadEventList(filename, events);
+
+  // Counters
+  unsigned int correctly_reconstructed = 0;
+  unsigned int true_topology = 0;
+  unsigned int reco_topology = 0;
 
   for(unsigned int i = 0; i < events.size(); ++i){
 
@@ -29,23 +45,22 @@ int MainTest(){
     signal_map_all.insert( std::make_pair( cc_0pi_mu, 1 ) );
     signal_map_all.insert( std::make_pair( cc_0pi_pi, 0 ) );
 
-    std::cout << "-----------------------------------------------------------" << std::endl;
-    std::cout << " RECO : " << std::endl;
-    std::cout << "   muons   : " << e.CountRecoParticlesWithPdg(13) << std::endl;
-    std::cout << "   pi+/-   : " << e.CountRecoParticlesWithPdg(211) + e.CountRecoParticlesWithPdg(-211) << std::endl;
-    std::cout << "   pi0     : " << e.CountRecoParticlesWithPdg(111) << std::endl;
-    std::cout << "   protons : " << e.CountRecoParticlesWithPdg(2212) << std::endl;
-    std::cout << "   cc0pi   : " << e.CheckRecoTopology(signal_map_all) << std::endl;
-
-    std::cout << " MC   : " << std::endl;
-    std::cout << "   muons   : " << e.CountMCParticlesWithPdg(13) << std::endl;
-    std::cout << "   pi+/-   : " << e.CountMCParticlesWithPdg(211) + e.CountMCParticlesWithPdg(-211) << std::endl;
-    std::cout << "   pi0     : " << e.CountMCParticlesWithPdg(111) << std::endl;
-    std::cout << "   protons : " << e.CountMCParticlesWithPdg(2212) << std::endl;
-    std::cout << "   cc0pi   : " << e.CheckMCTopology(signal_map_all) << std::endl;
-    
+    if(e.CheckMCTopology(signal_map_all) && e.CheckRecoTopology(signal_map_all)) correctly_reconstructed++;
+    if(e.CheckMCTopology(signal_map_all)) true_topology++;
+    if(e.CheckRecoTopology(signal_map_all)) reco_topology++;
   }
-  
+
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " Fraction of correctly reconstructed CC 0Pi events : " << correctly_reconstructed/double(true_topology) << std::endl;
+  std::cout << " Fraction of mis-identified CC 0Pi events          : " << (reco_topology - correctly_reconstructed)/double(reco_topology) << std::endl; 
+
+  time_t rawtime_end;
+  struct tm * timeinfo_end;
+  time (&rawtime_end);
+  timeinfo_end = localtime (&rawtime_end);
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " End: Local time and date:  " << asctime(timeinfo_end) << std::endl;
+
   return 0;
 
 } // MainTest()
