@@ -97,13 +97,17 @@ namespace selection{
        */
       bool GetHasCalorimetry() const;
 
-
+      /**
+       * @brief  Get the cos(theta) of the particle regarding the z direction
+       */
+      float GetCosTheta() const;
     private : 
 
       int      m_pdg;             ///< pdg code
       float    m_mass;            ///< mass of the particle
       float    m_energy;          ///< energy of the particle
-      float    m_length;          ///< energy of the particle
+      float    m_length;          ///< length of the particle track
+      float    m_costheta;        ///< cos(theta) of the particle
       bool     m_has_calorimetry; ///< whether or not the particle has calorimetry
       TVector3 m_vertex;          ///< particle start position
       TVector3 m_end;             ///< particle end position

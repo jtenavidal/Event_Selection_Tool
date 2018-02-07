@@ -15,7 +15,9 @@ namespace selection{
     m_end(end),
     m_momentum(momentum){
       m_length = sqrt(pow(end[0] - vertex[0], 2) + pow(end[1] - vertex[1], 2) + pow(end[0] - vertex[0], 2));
-    }
+      TVector3 u_z(0,0,1);
+      m_costheta = (m_end - m_vertex).Dot( u_z )/m_length ;
+  }
 
   //------------------------------------------------------------------------------------------ 
   
@@ -134,5 +136,11 @@ namespace selection{
     return m_has_calorimetry;
   
   }
+
+  float Particle::GetCosTheta() const {
+    return m_costheta ;
+
+  }
+
     
 } // Selection
