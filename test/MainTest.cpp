@@ -15,51 +15,112 @@ int MainTest(){
   timeinfo = localtime (&rawtime);
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Start: Local time and date:  " << asctime(timeinfo) << std::endl;
-  std::cout << " 100 sample " << std::endl;
 
-  std::string filename = "/hepstore/rjones/Samples/FNAL/analysis_trees/analysis_trees_100.root";
+  std::string filename = "/hepstore/rjones/Samples/FNAL/analysis_trees/analysis_trees_10.root";
 
   EventSelectionTool::EventList events;
   EventSelectionTool::LoadEventList(filename, events);
 
   // Counters
-  unsigned int correctly_reconstructed = 0;
-  unsigned int true_topology = 0;
-  unsigned int reco_topology = 0;
+  unsigned int correctly_reconstructed_cc  = 0;
+  unsigned int true_topology_cc            = 0;
+  unsigned int reco_topology_cc            = 0;
 
+  unsigned int correctly_reconstructed_nc  = 0;
+  unsigned int true_topology_nc            = 0;
+  unsigned int reco_topology_nc            = 0;
+  
+  unsigned int correctly_reconstructed_0pi = 0;
+  unsigned int true_topology_0pi           = 0;
+  unsigned int reco_topology_0pi           = 0;
+  
+  unsigned int correctly_reconstructed_1pi = 0;
+  unsigned int true_topology_1pi           = 0;
+  unsigned int reco_topology_1pi           = 0;
+  
+  unsigned int correctly_reconstructed_pi0 = 0;
+  unsigned int true_topology_pi0           = 0;
+  unsigned int reco_topology_pi0           = 0;
+  
   for(unsigned int i = 0; i < events.size(); ++i){
 
     // Do analysis
     Event &e(events[i]);
 
-    TopologyMap signal_map_all;
+    TopologyMap cc_signal_map;
+    TopologyMap nc_signal_map;
+    TopologyMap cc0pi_signal_map;
+    TopologyMap cc1pi_signal_map;
+    TopologyMap ccpi0_signal_map;
    
-    std::vector< int > cc_0pi_mu;
-    std::vector< int > cc_0pi_pi;
+    std::vector< int > mu;
+    std::vector< int > pi;
+    std::vector< int > pi0;
     
-    cc_0pi_mu.push_back( 13 );
-    cc_0pi_pi.push_back( 211 );
-    cc_0pi_pi.push_back(-211 );
-    cc_0pi_pi.push_back( 111 );
+    mu.push_back( 13 );
+    pi.push_back( 211 );
+    pi.push_back(-211 );
+    pi0.push_back( 111 );
     
-    signal_map_all.insert( std::make_pair( cc_0pi_mu, 1 ) );
-    signal_map_all.insert( std::make_pair( cc_0pi_pi, 0 ) );
+    cc_signal_map.insert( std::make_pair( mu,  1 ) );
+    nc_signal_map.insert( std::make_pair( mu,  0 ) );
+    
+    cc0pi_signal_map.insert( std::make_pair( mu,  1 ) );
+    cc0pi_signal_map.insert( std::make_pair( pi,  0 ) );
+    cc0pi_signal_map.insert( std::make_pair( pi0, 0 ) );
 
-    if(e.CheckMCTopology(signal_map_all) && e.CheckRecoTopology(signal_map_all)) correctly_reconstructed++;
-    if(e.CheckMCTopology(signal_map_all)) true_topology++;
-    if(e.CheckRecoTopology(signal_map_all)) reco_topology++;
+    cc1pi_signal_map.insert( std::make_pair( mu,  1 ) );
+    cc1pi_signal_map.insert( std::make_pair( pi,  1 ) );
+    
+    ccpi0_signal_map.insert( std::make_pair( mu,  1 ) );
+    ccpi0_signal_map.insert( std::make_pair( pi0, 1 ) );
+    
+    if(e.CheckMCTopology(cc_signal_map) && e.CheckRecoTopology(cc_signal_map)) correctly_reconstructed_cc++;
+    if(e.CheckMCTopology(cc_signal_map)) true_topology_cc++;
+    if(e.CheckRecoTopology(cc_signal_map)) reco_topology_cc++;
+
+    if(e.CheckMCTopology(nc_signal_map) && e.CheckRecoTopology(nc_signal_map)) correctly_reconstructed_nc++;
+    if(e.CheckMCTopology(nc_signal_map)) true_topology_nc++;
+    if(e.CheckRecoTopology(nc_signal_map)) reco_topology_nc++;
+    
+    if(e.CheckMCTopology(cc0pi_signal_map) && e.CheckRecoTopology(cc0pi_signal_map)) correctly_reconstructed_0pi++;
+    if(e.CheckMCTopology(cc0pi_signal_map)) true_topology_0pi++;
+    if(e.CheckRecoTopology(cc0pi_signal_map)) reco_topology_0pi++;
+    
+    if(e.CheckMCTopology(cc1pi_signal_map) && e.CheckRecoTopology(cc1pi_signal_map)) correctly_reconstructed_1pi++;
+    if(e.CheckMCTopology(cc1pi_signal_map)) true_topology_1pi++;
+    if(e.CheckRecoTopology(cc1pi_signal_map)) reco_topology_1pi++;
+    
+    if(e.CheckMCTopology(ccpi0_signal_map) && e.CheckRecoTopology(ccpi0_signal_map)) correctly_reconstructed_pi0++;
+    if(e.CheckMCTopology(ccpi0_signal_map)) true_topology_pi0++;
+    if(e.CheckRecoTopology(ccpi0_signal_map)) reco_topology_pi0++;
   }
 
+  std::cout << "===========================================================" << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
-  std::cout << " Fraction of correctly reconstructed CC 0Pi events : " << correctly_reconstructed/double(true_topology) << std::endl;
-  std::cout << " Fraction of mis-identified CC 0Pi events          : " << (reco_topology - correctly_reconstructed)/double(reco_topology) << std::endl; 
+  std::cout << " Percentage of correctly reconstructed NC events     : " << correctly_reconstructed_nc/double(true_topology_nc) * 100                         << std::endl;
+  std::cout << " Percentage of mis-identified NC events              : " << (reco_topology_nc - correctly_reconstructed_nc)/double(true_topology_nc) * 100    << std::endl; 
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " Percentage of correctly reconstructed CC events     : " << correctly_reconstructed_cc/double(true_topology_cc) * 100                         << std::endl;
+  std::cout << " Percentage of mis-identified CC events              : " << (reco_topology_cc - correctly_reconstructed_cc)/double(true_topology_cc) * 100    << std::endl; 
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " Percentage of correctly reconstructed CC 0Pi events : " << correctly_reconstructed_0pi/double(true_topology_0pi) * 100                       << std::endl;
+  std::cout << " Percentage of mis-identified CC 0Pi events          : " << (reco_topology_0pi - correctly_reconstructed_0pi)/double(true_topology_0pi) * 100 << std::endl; 
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " Percentage of correctly reconstructed CC 1Pi events : " << correctly_reconstructed_1pi/double(true_topology_1pi) * 100                       << std::endl;
+  std::cout << " Percentage of mis-identified CC 1Pi events          : " << (reco_topology_1pi - correctly_reconstructed_1pi)/double(true_topology_1pi) * 100 << std::endl; 
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " Percentage of correctly reconstructed CC Pi0 events : " << correctly_reconstructed_pi0/double(true_topology_pi0) * 100                       << std::endl;
+  std::cout << " Percentage of mis-identified CC Pi0 events          : " << (reco_topology_pi0 - correctly_reconstructed_pi0)/double(true_topology_pi0) * 100 << std::endl; 
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << "===========================================================" << std::endl;
 
   time_t rawtime_end;
   struct tm * timeinfo_end;
   time (&rawtime_end);
   timeinfo_end = localtime (&rawtime_end);
-  std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " End: Local time and date:  " << asctime(timeinfo_end) << std::endl;
+  std::cout << "-----------------------------------------------------------" << std::endl;
 
   return 0;
 

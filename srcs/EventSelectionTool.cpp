@@ -247,15 +247,51 @@ namespace selection{
     // Muon candidates 
     std::vector<unsigned int> mu_candidates;
 
+    // Assign ridiculously short length to initiate the longest track length
+    float longest_track_length    = -std::numeric_limits<float>::max();
+    unsigned int longest_track_id =  std::numeric_limits<unsigned int>::max();
+    
+    // Boolean for whether the longest track is always greater than 2x the others
+    bool always_longer(true);
+
     // Loop over track list
     for(unsigned int id = 0; id < track_list.size(); ++id){
-   
+
       const Track &track(track_list[id]);
+
+      // Get the lengths of the tracks and find the longest track and compare to the rest of
+      // the lengths
+      if(track.m_length > longest_track_length) {
+        longest_track_length = track.m_length;
+        longest_track_id     = id;
+      }
+
+      // If the longest track is ever less than 1.5 times longer than the rest of the tracks
+      // Set the boolean to false
+      if(abs(longest_track_length) <= 2*track.m_length && longest_track_id != id) always_longer = false;
+    }
+
+    // Has the muon been identified using track length
+    bool muon_found_by_length(false);
+
+    // Loop over track list
+    for(unsigned int id = 0; id < track_list.size(); ++id){
+
+      const Track &track(track_list[id]);
+
+      // If the longest is greater than 2x the rest and we are looking at the longest
+      // Call it the muon
+      if(longest_track_length > 90 && always_longer && id == longest_track_id && longest_track_id < track_list.size()) {
+        muon_found_by_length = true;
+        recoparticle_list.push_back(Particle(13, track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end));
+      }
 
       // Use PIDA values to find pions, protons and kaons
       int pida_pdg = EventSelectionTool::GetPdgByPIDA(track);
 
-      if(pida_pdg == 13) 
+      // If the muon has not been found by length and its PIDA value is 13
+      // Call the track a candidate muon
+      if(!muon_found_by_length && pida_pdg == 13) 
         mu_candidates.push_back(id);
       else if(pida_pdg == 211 || pida_pdg == 321 || pida_pdg == 2212) 
         recoparticle_list.push_back(Particle(pida_pdg, track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end));
@@ -263,6 +299,7 @@ namespace selection{
         recoparticle_list.push_back(Particle(EventSelectionTool::GetPdgByChi2(track), track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end)); 
     }
 
+    // If the muon was found by length, this will return
     if(mu_candidates.size() == 0) return;
     if(mu_candidates.size() == 1) {
       const Track &muon(track_list[mu_candidates[0]]);

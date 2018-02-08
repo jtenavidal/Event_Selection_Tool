@@ -33,6 +33,6 @@
 ./srcs/Particle_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixFfwd.h
 ./srcs/Particle_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixFUtils.h
 ./srcs/Particle_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixFUtilsfwd.h
-./srcs/Particle_cpp.so: /hepstore/rjones/Exercises/Event_Selection_Tool/./include/Particle.h
+./srcs/Particle_cpp.so: /hepstore/rjones/Exercises/Selection_Tool_SBND/./include/Particle.h
 ./srcs/Particle_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/cintdictversion.h /hepstore/rjones/Software/ROOT/Install/include/root/RVersion.h
 Particle_cpp__ROOTBUILDVERSION= 5.34/36

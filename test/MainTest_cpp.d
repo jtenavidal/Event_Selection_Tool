@@ -1,7 +1,7 @@
 
 # DO NOT DELETE
 
-./test/MainTest_cpp.so: /hepstore/rjones/Exercises/Event_Selection_Tool/./include/EventSelectionTool.h
+./test/MainTest_cpp.so: /hepstore/rjones/Exercises/Selection_Tool_SBND/./include/EventSelectionTool.h
 ./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TTree.h
 ./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TBranch.h
 ./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TNamed.h
@@ -64,8 +64,8 @@
 ./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixFfwd.h
 ./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixFUtils.h
 ./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TMatrixFUtilsfwd.h
-./test/MainTest_cpp.so: /hepstore/rjones/Exercises/Event_Selection_Tool/./include/Event.h
-./test/MainTest_cpp.so: /hepstore/rjones/Exercises/Event_Selection_Tool/./include/Particle.h
-./test/MainTest_cpp.so: /hepstore/rjones/Exercises/Event_Selection_Tool/./include/Event.h
+./test/MainTest_cpp.so: /hepstore/rjones/Exercises/Selection_Tool_SBND/./include/Event.h
+./test/MainTest_cpp.so: /hepstore/rjones/Exercises/Selection_Tool_SBND/./include/Particle.h
+./test/MainTest_cpp.so: /hepstore/rjones/Exercises/Selection_Tool_SBND/./include/Event.h
 ./test/MainTest_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/cintdictversion.h /hepstore/rjones/Software/ROOT/Install/include/root/RVersion.h
 MainTest_cpp__ROOTBUILDVERSION= 5.34/36
