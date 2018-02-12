@@ -1,6 +1,7 @@
 #include "../include/EventSelectionTool.h"
 #include "../include/Event.h"
 #include <iostream>
+#include <sstream>
 #include <numeric>
 #include <time.h>
 #include "TVector3.h"
@@ -16,13 +17,8 @@ int MainTest(){
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Start: Local time and date:  " << asctime(timeinfo) << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
-  std::cout << " Running 10 file " << std::endl;
-
-  std::string filename = "/hepstore/rjones/Samples/FNAL/analysis_trees/analysis_trees_10.root";
-
-  EventSelectionTool::EventList events;
-  EventSelectionTool::LoadEventList(filename, events);
-
+  std::cout << " Running all files " << std::endl;
+  
   // Counters
   unsigned int correctly_reconstructed_cc  = 0;
   unsigned int true_topology_cc            = 0;
@@ -31,52 +27,76 @@ int MainTest(){
   unsigned int correctly_reconstructed_nc  = 0;
   unsigned int true_topology_nc            = 0;
   unsigned int reco_topology_nc            = 0;
-  
+
   unsigned int correctly_reconstructed_0pi = 0;
   unsigned int true_topology_0pi           = 0;
   unsigned int reco_topology_0pi           = 0;
-  
+
   unsigned int correctly_reconstructed_1pi = 0;
   unsigned int true_topology_1pi           = 0;
   unsigned int reco_topology_1pi           = 0;
-  
+
   unsigned int correctly_reconstructed_pi0 = 0;
   unsigned int true_topology_pi0           = 0;
   unsigned int reco_topology_pi0           = 0;
+
+  // Initialise event list and the topology maps
+  EventSelectionTool::EventList events;
+  
+  TopologyMap cc_signal_map;
+  TopologyMap nc_signal_map;
+  TopologyMap cc0pi_signal_map;
+  TopologyMap cc1pi_signal_map;
+  TopologyMap ccpi0_signal_map;
+ 
+  std::vector< int > mu;
+  std::vector< int > pi;
+  std::vector< int > pi0;
+  
+  mu.push_back( 13 );
+  pi.push_back( 211 );
+  pi.push_back(-211 );
+  pi0.push_back( 111 );
+  
+  cc_signal_map.insert( std::make_pair( mu,  1 ) );
+  nc_signal_map.insert( std::make_pair( mu,  0 ) );
+  
+  cc0pi_signal_map.insert( std::make_pair( mu,  1 ) );
+  cc0pi_signal_map.insert( std::make_pair( pi,  0 ) );
+  cc0pi_signal_map.insert( std::make_pair( pi0, 0 ) );
+
+  cc1pi_signal_map.insert( std::make_pair( mu,  1 ) );
+  cc1pi_signal_map.insert( std::make_pair( pi,  1 ) );
+  
+  ccpi0_signal_map.insert( std::make_pair( mu,  1 ) );
+  ccpi0_signal_map.insert( std::make_pair( pi0, 1 ) );
+  
+  for( unsigned int i = 0; i < 398; ++i ){
+  
+    // Get the filename for each 2D histogram
+    std::stringstream ss;
+    ss.clear();
+    
+    std::string name;
+    name.clear();
+    
+    char file_name[1024];
+    
+    ss << "/hepstore/rjones/Samples/FNAL/analysis_trees/all/3486578_" << i <<"/output_file.root";
+    name = ss.str();
+            
+    strcpy( file_name, name.c_str() );
+      
+    EventSelectionTool::LoadEventList(file_name, events);
+  }
+
+  std::cout << " Events : " << events.size() << std::endl;
   
   for(unsigned int i = 0; i < events.size(); ++i){
 
     // Do analysis
     Event &e(events[i]);
 
-    TopologyMap cc_signal_map;
-    TopologyMap nc_signal_map;
-    TopologyMap cc0pi_signal_map;
-    TopologyMap cc1pi_signal_map;
-    TopologyMap ccpi0_signal_map;
-   
-    std::vector< int > mu;
-    std::vector< int > pi;
-    std::vector< int > pi0;
-    
-    mu.push_back( 13 );
-    pi.push_back( 211 );
-    pi.push_back(-211 );
-    pi0.push_back( 111 );
-    
-    cc_signal_map.insert( std::make_pair( mu,  1 ) );
-    nc_signal_map.insert( std::make_pair( mu,  0 ) );
-    
-    cc0pi_signal_map.insert( std::make_pair( mu,  1 ) );
-    cc0pi_signal_map.insert( std::make_pair( pi,  0 ) );
-    cc0pi_signal_map.insert( std::make_pair( pi0, 0 ) );
-
-    cc1pi_signal_map.insert( std::make_pair( mu,  1 ) );
-    cc1pi_signal_map.insert( std::make_pair( pi,  1 ) );
-    
-    ccpi0_signal_map.insert( std::make_pair( mu,  1 ) );
-    ccpi0_signal_map.insert( std::make_pair( pi0, 1 ) );
-    
     if(e.CheckMCTopology(cc_signal_map) && e.CheckRecoTopology(cc_signal_map)) correctly_reconstructed_cc++;
     if(e.CheckMCTopology(cc_signal_map)) true_topology_cc++;
     if(e.CheckRecoTopology(cc_signal_map)) reco_topology_cc++;
