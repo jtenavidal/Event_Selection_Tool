@@ -16,9 +16,9 @@ int MainTest(){
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Start: Local time and date:  " << asctime(timeinfo) << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
-  std::cout << " Running 100 file " << std::endl;
+  std::cout << " Running on the 398 file " << std::endl;
 
-  std::string filename = "/hepstore/rjones/Samples/FNAL/analysis_trees/analysis_trees_100.root";
+  std::string filename = "/hepstore/rjones/Samples/FNAL/analysis_trees/analysis_trees_398.root";
 
   EventSelectionTool::EventList events;
   EventSelectionTool::LoadEventList(filename, events);

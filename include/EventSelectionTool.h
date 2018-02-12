@@ -57,7 +57,7 @@ namespace selection{
        * @param  track_list vector of tracks to fill
        *
        */
-      static void GetTrackList(TTree *track_tree, const std::pair<int, int> &unique_event, TrackList &track_list);
+      static void GetTrackList(unsigned int start, TTree *track_tree, const std::pair<int, int> &unique_event, TrackList &track_list);
 
       /**
        * @brief  get the list of shower objects
@@ -67,7 +67,7 @@ namespace selection{
        * @param  shower_list vector of showers to fill
        *
        */
-      static void GetShowerList(TTree *shower_tree, const std::pair<int, int> &unique_event, ShowerList &shower_list);
+      static void GetShowerList(unsigned int start, TTree *shower_tree, const std::pair<int, int> &unique_event, ShowerList &shower_list);
       
       /**
        * @brief  get the list of mc particle objects
@@ -77,9 +77,8 @@ namespace selection{
        * @param  mc particle_list vector of mc particles to fill
        *
        */
-      static void GetMCParticleList(TTree *mcparticle_tree, const std::pair<int, int> &unique_event, ParticleList &mcparticle_list);
+      static void GetMCParticleList(unsigned int start, TTree *mcparticle_tree, const std::pair<int, int> &unique_event, ParticleList &mcparticle_list);
 
- 
       /**
        * @brief  get a list of reconstructed particles from track objects
        *
@@ -88,6 +87,15 @@ namespace selection{
        *
        */
       static void GetRecoParticleFromTrack(const TrackList &track_list, ParticleList &recoparticle_list);
+ 
+      /**
+       * @brief  get a list of reconstructed particles from track objects using original method
+       *
+       * @param  track_list list of tracks in the event
+       * @param  recoparticle_list particle list to fill
+       *
+       */
+      static void GetRecoParticleFromTrackOld(const TrackList &track_list, ParticleList &recoparticle_list);
 
       /**
        * @brief  get a list of reconstructed particles from shower objects
@@ -118,6 +126,16 @@ namespace selection{
        *
        */
       static int GetPdgByPIDA(const Track &track);
+      
+      /**
+       * @brief  get the particle id based on its PIDA value with strict limits
+       *
+       * @param  track the track to find the pdg of
+       *
+       * @return pdg
+       *
+       */
+      static int GetPdgByPIDAStrict(const Track &track);
       
       /**
        * @brief  Track class 

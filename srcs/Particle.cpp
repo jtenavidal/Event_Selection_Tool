@@ -28,7 +28,7 @@ namespace selection{
     
       // Set member variables
       m_mass            = this->GetMassFromPdg(pdg);
-      m_energy          = m_mass + kinetic_energy;
+      m_energy          = m_mass + kinetic_energy/double(1000);
       
       // Get the magnitude of the momentum
       double momentum_magnitude = sqrt(pow(m_energy,2) - pow(m_mass,2));
