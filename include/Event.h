@@ -28,7 +28,7 @@ namespace selection{
        * @param  mc_vertex Monte Carlo neutrino vertex 
        * @param  reco_vertex reconstructed neutrino vertex
        */
-      Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex);
+      Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex, const float neutrino_energy);
         
       /**
        * @brief  CountMCParticlesWithPdg
@@ -96,6 +96,20 @@ namespace selection{
        */
       TVector3 GetRecoNuVertex() const;
 
+      /**
+       * @brief  Get the true neutrino energy
+       */
+      float GetTrueNuEnergy() const;
+
+      /**
+       * @brief  Get the reconstructed neutrino energy for CC 0pi interactions
+       *
+       * @param  track muon track to use in the calculation
+       *
+       * @return float reconstructed neutrino energy 
+       */
+      float GetCC0piRecoNeutrinoEnergy(const Particle &particle) const;
+
     private : 
 
       /**
@@ -123,6 +137,7 @@ namespace selection{
       bool               m_is_cc;              ///< whether the event contains and CC or NC interaction
       TVector3           m_reco_vertex;        ///< reconstructed neutrino vertex
       TVector3           m_mc_vertex;          ///< reconstructed neutrino vertex
+      float              m_neutrino_energy;    ///< true neutrino energy
 
 
   }; // Event

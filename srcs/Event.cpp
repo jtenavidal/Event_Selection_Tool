@@ -2,13 +2,14 @@
 
 namespace selection{
   
-  Event::Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex) :
+  Event::Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex, const float neutrino_energy) :
     m_mc_particles(mc_particles),
     m_reco_particles(reco_particles),
     m_nuance(nuance),
     m_is_cc(is_cc),
     m_mc_vertex(mc_vertex),
-    m_reco_vertex(reco_vertex) {}
+    m_reco_vertex(reco_vertex), 
+    m_neutrino_energy(neutrino_energy) {}
 
   //------------------------------------------------------------------------------------------ 
     
@@ -90,6 +91,14 @@ namespace selection{
   }
 
   //------------------------------------------------------------------------------------------ 
+  
+  float Event::GetTrueNuEnergy() const{
+  
+    return m_neutrino_energy;
+
+  }
+  
+  //------------------------------------------------------------------------------------------ 
 
   unsigned int Event::CountParticlesWithPdg(const int pdg, const ParticleList &particle_list) const{
   
@@ -126,6 +135,30 @@ namespace selection{
 
     return true;
 
+  }
+
+  float Event::GetCC0piRecoNeutrinoEnergy(const Particle &particle) const{
+    
+    // The variables from the branches and get the leaves
+    float m_n   = 0.93828;   // Nucleon mass, GeV
+    float m_mu  = 0.10566;   // Muon mass, GeV
+    float reco, e, p, cth;   // track variables
+    
+    // Vector of z direction
+    TVector3 z;
+    z[0] = 0;
+    z[1] = 0;
+    z[2] = 1;
+
+    // Get the values needed
+    e    = particle.GetEnergy();
+    p    = particle.GetMomentum().Mag();
+    cth  = (1/p) * (particle.GetMomentum()).Dot(z);
+    
+    reco = ( 1 / ( 1 - ( ( 1 / m_n ) * ( e - p*cth ) ) ) ) * ( e - ( 1 / ( 2 * m_n) ) * m_mu * m_mu );
+
+    return reco;
+  
   }
 
 

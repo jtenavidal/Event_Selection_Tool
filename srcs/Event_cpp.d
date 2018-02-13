@@ -1,8 +1,8 @@
 
 # DO NOT DELETE
 
-./srcs/Event_cpp.so: /hepstore/rjones/Exercises/Event_Selection_Tool/./include/Event.h
-./srcs/Event_cpp.so: /hepstore/rjones/Exercises/Event_Selection_Tool/./include/Particle.h
+./srcs/Event_cpp.so: /hepstore/rjones/Exercises/Selection_Tool_SBND/./include/Event.h
+./srcs/Event_cpp.so: /hepstore/rjones/Exercises/Selection_Tool_SBND/./include/Particle.h
 ./srcs/Event_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TVector3.h
 ./srcs/Event_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TError.h
 ./srcs/Event_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/Rtypes.h

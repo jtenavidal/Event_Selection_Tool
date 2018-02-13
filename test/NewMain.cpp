@@ -5,6 +5,9 @@
 #include <numeric>
 #include <time.h>
 #include "TVector3.h"
+#include "TH1.h"
+#include "TCanvas.h"
+#include "TLegend.h"
 
 using namespace selection;
 
@@ -15,7 +18,7 @@ int MainTest(){
   time (&rawtime);
   timeinfo = localtime (&rawtime);
   std::cout << "-----------------------------------------------------------" << std::endl;
-  std::cout << " Start: Local time and date:  " << asctime(timeinfo) << std::endl;
+  std::cout << " Start: Local time and date:  " << asctime(timeinfo)         << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Running all files " << std::endl;
   
@@ -94,41 +97,76 @@ int MainTest(){
     EventSelectionTool::LoadEventList(file_name, events);
   }
 
-  std::cout << " Events : " << events.size() << std::endl;
-  
+  // Neutrino energy histograms
+  TH1F *h_reco_energy      = new TH1F("h_reco_energy",      "CC 0#pi neutrino energy",100,-0.5,2);
+  TH1F *h_good_reco_energy = new TH1F("h_good_reco_energy", "CC 0#pi neutrino energy",100,-0.5,2);
+  TH1F *h_true_energy      = new TH1F("h_true_energy",      "CC 0#pi neutrino energy",100,-0.5,2);
+
+  // Get CC 0pi true and reconstructed neutrino energies
+  std::vector<float> true_neutrino_energy, reco_neutrino_energy, good_reco_neutrino_energy;
+
   for(unsigned int i = 0; i < events.size(); ++i){
 
     // Do analysis
     Event &e(events[i]);
 
     if(e.CheckMCTopology(cc_signal_map) && e.CheckRecoTopology(cc_signal_map)) correctly_reconstructed_cc++;
-    if(e.CheckMCTopology(cc_signal_map)) true_topology_cc++;
     if(e.CheckRecoTopology(cc_signal_map)) reco_topology_cc++;
+    if(e.CheckMCTopology(cc_signal_map))   true_topology_cc++;
 
     if(e.CheckMCTopology(nc_signal_map) && e.CheckRecoTopology(nc_signal_map)) correctly_reconstructed_nc++;
-    if(e.CheckMCTopology(nc_signal_map)) true_topology_nc++;
     if(e.CheckRecoTopology(nc_signal_map)) reco_topology_nc++;
-    
-    if(e.CheckMCTopology(cc0pi_signal_map) && e.CheckRecoTopology(cc0pi_signal_map)) correctly_reconstructed_0pi++;
-    if(e.CheckMCTopology(cc0pi_signal_map)) true_topology_0pi++;
-    if(e.CheckRecoTopology(cc0pi_signal_map)) {
-      reco_topology_0pi++;
-      if( e.CountRecoParticlesWithPdg(2212) > 0) protons_cc0pi++;
-      if( e.CountMCParticlesWithPdg(2212) > 0)   true_protons_cc0pi++;
-    }
+    if(e.CheckMCTopology(nc_signal_map))   true_topology_nc++;
     
     if(e.CheckMCTopology(cc1pi_signal_map) && e.CheckRecoTopology(cc1pi_signal_map)) correctly_reconstructed_1pi++;
-    if(e.CheckMCTopology(cc1pi_signal_map)) true_topology_1pi++;
-    if(e.CheckRecoTopology(cc1pi_signal_map)) {
-      reco_topology_1pi++;
-      if( e.CountRecoParticlesWithPdg(2212) > 0) protons_cc1pi++;
-      if( e.CountMCParticlesWithPdg(2212) > 0)   true_protons_cc1pi++;
-    }
+    if(e.CheckRecoTopology(cc1pi_signal_map)) reco_topology_1pi++;
+    if(e.CheckMCTopology(cc1pi_signal_map))   true_topology_1pi++;
     
     if(e.CheckMCTopology(ccpi0_signal_map) && e.CheckRecoTopology(ccpi0_signal_map)) correctly_reconstructed_pi0++;
-    if(e.CheckMCTopology(ccpi0_signal_map)) true_topology_pi0++;
     if(e.CheckRecoTopology(ccpi0_signal_map)) reco_topology_pi0++;
+    if(e.CheckMCTopology(ccpi0_signal_map))   true_topology_pi0++;
+    
+    if(e.CheckMCTopology(cc0pi_signal_map) && e.CheckRecoTopology(cc0pi_signal_map)) {
+      
+      // Counter
+      correctly_reconstructed_0pi++;
+      
+      // Get the well selected reconstructed neutrino energy
+      ParticleList parts       = e.GetRecoParticleList();
+      unsigned int n_particles = e.GetRecoParticleList().size();
+      
+      // Get reconstructed energy
+      for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 13) {
+        good_reco_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
+      }
+
+    }
+    if(e.CheckRecoTopology(cc0pi_signal_map)) {
+      
+      // Counter
+      reco_topology_0pi++;
+
+      // Get the well selected reconstructed neutrino energy
+      ParticleList parts       = e.GetRecoParticleList();
+      unsigned int n_particles = e.GetRecoParticleList().size();
+      
+      // Get reconstructed energy
+      for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 13) {
+        reco_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
+      }
+    }
+    if(e.CheckMCTopology(cc0pi_signal_map)) {
+     
+      // Counter
+      true_topology_0pi++;
+    
+      // Get true neutrino energy
+      true_neutrino_energy.push_back(e.GetTrueNuEnergy());
+    }
   }
+  for( unsigned int i = 0; i < reco_neutrino_energy.size(); ++i)      h_reco_energy->Fill(reco_neutrino_energy[i]);
+  for( unsigned int i = 0; i < good_reco_neutrino_energy.size(); ++i) h_good_reco_energy->Fill(good_reco_neutrino_energy[i]);
+  for( unsigned int i = 0; i < true_neutrino_energy.size(); ++i)      h_true_energy->Fill(true_neutrino_energy[i]);
 
   std::cout << "===========================================================" << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
@@ -138,20 +176,41 @@ int MainTest(){
   std::cout << " Percentage of correctly reconstructed CC events     : " << correctly_reconstructed_cc/double(true_topology_cc) * 100                         << std::endl;
   std::cout << " Impurity of reconstructed CC events                 : " << (reco_topology_cc - correctly_reconstructed_cc)/double(reco_topology_cc) * 100    << std::endl; 
   std::cout << "-----------------------------------------------------------" << std::endl;
-  std::cout << " Percentage of correctly reconstructed CC 0Pi events : " << correctly_reconstructed_0pi/double(true_topology_0pi) * 100                       << std::endl;
-  std::cout << " Impurity of reconstructed CC 0Pi events             : " << (reco_topology_0pi - correctly_reconstructed_0pi)/double(reco_topology_0pi) * 100 << std::endl; 
-  std::cout << " Reco Protons                                        : " << protons_cc0pi      << std::endl;
-  std::cout << " True Protons                                        : " << true_protons_cc0pi << std::endl;
-  std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Percentage of correctly reconstructed CC 1Pi events : " << correctly_reconstructed_1pi/double(true_topology_1pi) * 100                       << std::endl;
   std::cout << " Impurity of reconstructed CC 1Pi events             : " << (reco_topology_1pi - correctly_reconstructed_1pi)/double(reco_topology_1pi) * 100 << std::endl; 
-  std::cout << " Reco Protons                                        : " << protons_cc1pi << std::endl;
-  std::cout << " True Protons                                        : " << true_protons_cc1pi << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Percentage of correctly reconstructed CC Pi0 events : " << correctly_reconstructed_pi0/double(true_topology_pi0) * 100                       << std::endl;
   std::cout << " Impurity of reconstructed CC Pi0 events             : " << (reco_topology_pi0 - correctly_reconstructed_pi0)/double(reco_topology_pi0) * 100 << std::endl; 
   std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " Percentage of correctly reconstructed CC 0Pi events : " << correctly_reconstructed_0pi/double(true_topology_0pi) * 100                       << std::endl;
+  std::cout << " Impurity of reconstructed CC 0Pi events             : " << (reco_topology_0pi - correctly_reconstructed_0pi)/double(reco_topology_0pi) * 100 << std::endl;
+  std::cout << " Number of reconstructed energies      : " << reco_neutrino_energy.size()      << std::endl;
+  std::cout << " Number of well reconstructed energies : " << good_reco_neutrino_energy.size() << std::endl;
+  std::cout << " Number of true energies               : " << true_neutrino_energy.size()      << std::endl;
+  std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << "===========================================================" << std::endl;
+
+  TCanvas *c = new TCanvas();
+  TLegend *l = new TLegend( 0.58, 0.68, 0.88, 0.88 );
+
+  l->AddEntry( h_true_energy,      " True ",               "l" );
+  l->AddEntry( h_reco_energy,      " Reconstructed ",      "l" );
+  l->AddEntry( h_good_reco_energy, " Well reconstructed ", "l" );
+    
+  h_true_energy->SetLineColor(2);
+  h_true_energy->SetStats(kFALSE);
+  h_reco_energy->SetLineColor(4);
+  h_reco_energy->SetStats(kFALSE);
+  h_reco_energy->GetXaxis()->SetTitle("Neutrino Energy [GeV]");
+  h_good_reco_energy->SetLineColor(6);
+  h_good_reco_energy->SetStats(kFALSE);
+
+  h_reco_energy->Draw();
+  h_good_reco_energy->Draw("same");
+  h_true_energy->Draw("same");
+  l->Draw();
+
+  c->SaveAs("plots/cc0pi_nu_energy.root");
 
   time_t rawtime_end;
   struct tm * timeinfo_end;
