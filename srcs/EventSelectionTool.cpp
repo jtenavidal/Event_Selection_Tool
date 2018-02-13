@@ -293,6 +293,8 @@ namespace selection{
       if(pida_pdg == 13 || id == longest_track_id || always_longest) { 
         mu_candidates.push_back(id);
       }
+      else if(track.m_length < 30) 
+        recoparticle_list.push_back(Particle(2212, track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end));
       else if(pida_pdg == 211 || pida_pdg == 321 || pida_pdg == 2212) 
         recoparticle_list.push_back(Particle(pida_pdg, track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end));
       else
@@ -493,7 +495,7 @@ namespace selection{
     if(track.m_pida >= 13 && track.m_pida < 13.5) return 321;
   
     //Proton
-    if(track.m_pida >= 13.5 && track.m_pida < 21) return 2212;
+    if(track.m_pida >= 13) return 2212;
 
     return std::numeric_limits<int>::max();
   

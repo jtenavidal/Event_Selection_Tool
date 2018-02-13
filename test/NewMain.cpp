@@ -31,10 +31,14 @@ int MainTest(){
   unsigned int correctly_reconstructed_0pi = 0;
   unsigned int true_topology_0pi           = 0;
   unsigned int reco_topology_0pi           = 0;
+  unsigned int protons_cc0pi               = 0;
+  unsigned int true_protons_cc0pi          = 0;
 
   unsigned int correctly_reconstructed_1pi = 0;
   unsigned int true_topology_1pi           = 0;
   unsigned int reco_topology_1pi           = 0;
+  unsigned int protons_cc1pi               = 0;
+  unsigned int true_protons_cc1pi          = 0;
 
   unsigned int correctly_reconstructed_pi0 = 0;
   unsigned int true_topology_pi0           = 0;
@@ -107,11 +111,19 @@ int MainTest(){
     
     if(e.CheckMCTopology(cc0pi_signal_map) && e.CheckRecoTopology(cc0pi_signal_map)) correctly_reconstructed_0pi++;
     if(e.CheckMCTopology(cc0pi_signal_map)) true_topology_0pi++;
-    if(e.CheckRecoTopology(cc0pi_signal_map)) reco_topology_0pi++;
+    if(e.CheckRecoTopology(cc0pi_signal_map)) {
+      reco_topology_0pi++;
+      if( e.CountRecoParticlesWithPdg(2212) > 0) protons_cc0pi++;
+      if( e.CountMCParticlesWithPdg(2212) > 0)   true_protons_cc0pi++;
+    }
     
     if(e.CheckMCTopology(cc1pi_signal_map) && e.CheckRecoTopology(cc1pi_signal_map)) correctly_reconstructed_1pi++;
     if(e.CheckMCTopology(cc1pi_signal_map)) true_topology_1pi++;
-    if(e.CheckRecoTopology(cc1pi_signal_map)) reco_topology_1pi++;
+    if(e.CheckRecoTopology(cc1pi_signal_map)) {
+      reco_topology_1pi++;
+      if( e.CountRecoParticlesWithPdg(2212) > 0) protons_cc1pi++;
+      if( e.CountMCParticlesWithPdg(2212) > 0)   true_protons_cc1pi++;
+    }
     
     if(e.CheckMCTopology(ccpi0_signal_map) && e.CheckRecoTopology(ccpi0_signal_map)) correctly_reconstructed_pi0++;
     if(e.CheckMCTopology(ccpi0_signal_map)) true_topology_pi0++;
@@ -128,9 +140,13 @@ int MainTest(){
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Percentage of correctly reconstructed CC 0Pi events : " << correctly_reconstructed_0pi/double(true_topology_0pi) * 100                       << std::endl;
   std::cout << " Impurity of reconstructed CC 0Pi events             : " << (reco_topology_0pi - correctly_reconstructed_0pi)/double(reco_topology_0pi) * 100 << std::endl; 
+  std::cout << " Reco Protons                                        : " << protons_cc0pi      << std::endl;
+  std::cout << " True Protons                                        : " << true_protons_cc0pi << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Percentage of correctly reconstructed CC 1Pi events : " << correctly_reconstructed_1pi/double(true_topology_1pi) * 100                       << std::endl;
   std::cout << " Impurity of reconstructed CC 1Pi events             : " << (reco_topology_1pi - correctly_reconstructed_1pi)/double(reco_topology_1pi) * 100 << std::endl; 
+  std::cout << " Reco Protons                                        : " << protons_cc1pi << std::endl;
+  std::cout << " True Protons                                        : " << true_protons_cc1pi << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Percentage of correctly reconstructed CC Pi0 events : " << correctly_reconstructed_pi0/double(true_topology_pi0) * 100                       << std::endl;
   std::cout << " Impurity of reconstructed CC Pi0 events             : " << (reco_topology_pi0 - correctly_reconstructed_pi0)/double(reco_topology_pi0) * 100 << std::endl; 
