@@ -250,39 +250,20 @@ namespace selection{
   //------------------------------------------------------------------------------------------ 
   
   void EventSelectionTool::GetRecoParticleFromTrack(const TrackList &track_list, ParticleList &recoparticle_list){
-
-    // Muon candidates 
-    std::vector<unsigned int> mu_candidates;
-    
+ 
     // Assign ridiculously short length to initiate the longest track length
-    float longest_track_length     = -std::numeric_limits<float>::max();
-    float highest_track_energy     = -std::numeric_limits<float>::max();
-    float lowest_chi2_mu           =  std::numeric_limits<float>::max();
-    unsigned int longest_track_id         =  std::numeric_limits<unsigned int>::max();
-    unsigned int highest_energy_track_id  =  std::numeric_limits<unsigned int>::max();
-    unsigned int lowest_chi2_mu_id        =  std::numeric_limits<unsigned int>::max();
+    float longest_track_length      = -std::numeric_limits<float>::max();
+    unsigned int longest_track_id   =  std::numeric_limits<unsigned int>::max();
     
-    for(unsigned int i = 0; i < mu_candidates.size(); ++i){
+    for(unsigned int i = 0; i < track_list.size(); ++i){
     
-      unsigned int id = mu_candidates[i];
-      const Track &candidate(track_list[id]);
+      const Track &candidate(track_list[i]);
 
       // Get the lengths of the tracks and find the longest track and compare to the rest of
       // the lengths
       if(candidate.m_length > longest_track_length) {
         longest_track_length = candidate.m_length;
-        longest_track_id     = id;
-      }
-      // Get the lengths of the tracks and find the longest track and compare to the rest of
-      // the lengths
-      if(candidate.m_kinetic_energy > highest_track_energy) {
-        highest_track_energy    = candidate.m_kinetic_energy;
-        highest_energy_track_id = id;
-      }
-      // Get the chi2 mu of the track ans find the lowest 
-      if(candidate.m_chi2_mu < lowest_chi2_mu) {
-        lowest_chi2_mu    = candidate.m_chi2_mu;
-        lowest_chi2_mu_id = id;
+        longest_track_id     = i;
       }
     }
 
@@ -293,116 +274,9 @@ namespace selection{
 
       const Track &track(track_list[id]);
       if(track.m_length*1.5 >= longest_track_length && id != longest_track_id) always_longest = false;
+
     }
-
-    // Loop over track list
-    for(unsigned int id = 0; id < track_list.size(); ++id){
-
-      const Track &track(track_list[id]);
-
-      // Use PIDA values to find pions, protons and kaons
-      int pida_pdg      = EventSelectionTool::GetPdgByPIDA(track);
-      float chi2_mu_pdg = track.m_chi2_mu;
-      float chi2_pi_pdg = track.m_chi2_pi;
-      
-      // If the muon has not been found by length and its PIDA value is 13
-      // Call the track a candidate muon
-      if(pida_pdg == 13 || (longest_track_length > 90 && always_longest)) 
-        mu_candidates.push_back(id);
-      else if(pida_pdg == 211 || pida_pdg == 321 || pida_pdg == 2212) 
-        recoparticle_list.push_back(Particle(pida_pdg, track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end));
-      else
-        recoparticle_list.push_back(Particle(EventSelectionTool::GetPdgByChi2(track), track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end)); 
-    }
-
-    // If there are no muon candidates, the function has finished
-    if(mu_candidates.size() == 0) return;
-    // If there is one candidate, it is the muon
-    if(mu_candidates.size() == 1) {
-      const Track &muon(track_list[mu_candidates[0]]);
-      recoparticle_list.push_back(Particle(13, muon.m_kinetic_energy, muon.m_length, muon.m_vertex, muon.m_end));
-      return;
-    }
-  
-    // If there are more than one candidates, need to do some work
-    // Boolean to check if the muon has been found
-    bool muon_found(false);
-    bool final_muon_condition(false);
-
-    unsigned int muonID = std::numeric_limits<unsigned int>::max();
-    
-    for(unsigned int i = 0; i < mu_candidates.size(); ++i){
-    
-      unsigned int id = mu_candidates[i];
-      const Track &candidate(track_list[id]);
-      
-      int pida_pdg      = EventSelectionTool::GetPdgByPIDA(candidate);
-      float chi2_mu_pdg = candidate.m_chi2_mu;
    
-      // If PIDA == 13 && chi2 within limits && length above 50: muon
-      if(pida_pdg == 13 && chi2_mu_pdg <= 4 && chi2_mu_pdg >= 0.25) {
-        muonID     = id;
-        final_muon_condition = true;
-        muon_found = true;
-        break;
-      }
-    }
-    if(!muon_found) {
-      
-      bool muon_found_2(false);
-
-      for(unsigned int i = 0; i < mu_candidates.size(); ++i){
-
-        unsigned int id = mu_candidates[i];
-        const Track &candidate(track_list[id]);
-        
-        int pida_pdg      = EventSelectionTool::GetPdgByPIDAStrict(candidate);
-        float chi2_mu_pdg = candidate.m_chi2_mu;
-
-        // Otherwise, if chi2 in range and longest track: muon
-        if(pida_pdg == 13) {
-          muonID       = id;
-          final_muon_condition = true;
-          muon_found_2 = true;
-          break; 
-        }
-      }
-     if(!muon_found_2) {
-        
-        for(unsigned int i = 0; i < mu_candidates.size(); ++i){
-
-          unsigned int id = mu_candidates[i];
-          const Track &candidate(track_list[id]);
-          
-          int pida_pdg      = EventSelectionTool::GetPdgByPIDAStrict(candidate);
-          float chi2_mu_pdg = candidate.m_chi2_mu;
-
-          // Otherwise, longest track: muon
-          if(i == longest_track_id) {
-            final_muon_condition = true;
-            muonID = id;
-            break; 
-          }
-        }
-      } 
-    } 
-   
-    if(final_muon_condition){
-      const Track &muon(track_list[muonID]);
-      recoparticle_list.push_back(Particle(13, muon.m_kinetic_energy, muon.m_length, muon.m_vertex, muon.m_end));
-    }
-    else{
-      for(unsigned int id = 0; id < mu_candidates.size(); ++id){
-        const Track &track(track_list[id]);
-        recoparticle_list.push_back(Particle(EventSelectionTool::GetPdgByChi2(track), track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end)); 
-      }
-    }
-  }
-
-  //------------------------------------------------------------------------------------------ 
-  
-  void EventSelectionTool::GetRecoParticleFromTrackOld(const TrackList &track_list, ParticleList &recoparticle_list){
- 
     // Muon candidates 
     std::vector<unsigned int> mu_candidates;
 
@@ -416,8 +290,9 @@ namespace selection{
 
       // If the muon has not been found by length and its PIDA value is 13
       // Call the track a candidate muon
-      if(pida_pdg == 13) 
+      if(pida_pdg == 13 || id == longest_track_id || always_longest) { 
         mu_candidates.push_back(id);
+      }
       else if(pida_pdg == 211 || pida_pdg == 321 || pida_pdg == 2212) 
         recoparticle_list.push_back(Particle(pida_pdg, track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end));
       else
@@ -431,7 +306,7 @@ namespace selection{
       recoparticle_list.push_back(Particle(13, muon.m_kinetic_energy, muon.m_length, muon.m_vertex, muon.m_end));
       return;
     }
-   
+    
     // If more than one muon candidate exists
     bool foundOneMuon(false);
     unsigned int muonID = std::numeric_limits<unsigned int>::max();
@@ -441,7 +316,7 @@ namespace selection{
       unsigned int id = mu_candidates[i];
       const Track &candidate(track_list[id]);
 
-      if(candidate.m_pida*candidate.m_chi2_mu >= 5 && candidate.m_pida*candidate.m_chi2_mu < 9) {
+      if(longest_track_id == id && candidate.m_chi2_mu >= 0.25 && candidate.m_chi2_mu <= 4 && always_longest) {
       
         if(!foundOneMuon) {
           muonID = id;
@@ -455,7 +330,6 @@ namespace selection{
     }
     if(!foundOneMuon) {
     
-      float min_chi2 = std::numeric_limits<float>::max();
       unsigned int best_id  = std::numeric_limits<unsigned int>::max();
 
       for(unsigned int i = 0; i < mu_candidates.size(); ++i){
@@ -463,9 +337,9 @@ namespace selection{
         unsigned int id = mu_candidates[i];
         const Track &candidate(track_list[id]);
 
-        if(candidate.m_chi2_mu < min_chi2) {
-          best_id  = id;
-          min_chi2 = candidate.m_chi2_mu; 
+        if(id == longest_track_id) {
+          best_id = id;
+          break;
         }
       }
       muonID = best_id;

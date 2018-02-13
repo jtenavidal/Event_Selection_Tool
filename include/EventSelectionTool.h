@@ -95,16 +95,6 @@ namespace selection{
        * @param  recoparticle_list particle list to fill
        *
        */
-      static void GetRecoParticleFromTrackOld(const TrackList &track_list, ParticleList &recoparticle_list);
-
-      /**
-       * @brief  get a list of reconstructed particles from shower objects
-       *
-       * @param  shower_list list of showers in the event
-       * @param  reco_vertex the reconstructed neutrino vertex
-       * @param  recoparticle_list particle list to fill
-       *
-       */
       static void GetRecoParticleFromShower(const ShowerList &shower_list, const TVector3 &reco_vertex, ParticleList &recoparticle_list);
 
       /**

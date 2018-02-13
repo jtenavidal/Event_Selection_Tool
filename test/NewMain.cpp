@@ -121,19 +121,19 @@ int MainTest(){
   std::cout << "===========================================================" << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Percentage of correctly reconstructed NC events     : " << correctly_reconstructed_nc/double(true_topology_nc) * 100                         << std::endl;
-  std::cout << " Percentage of mis-identified NC events              : " << (reco_topology_nc - correctly_reconstructed_nc)/double(true_topology_nc) * 100    << std::endl; 
+  std::cout << " Impurity of reconstructed NC events                 : " << (reco_topology_nc - correctly_reconstructed_nc)/double(reco_topology_nc) * 100    << std::endl; 
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Percentage of correctly reconstructed CC events     : " << correctly_reconstructed_cc/double(true_topology_cc) * 100                         << std::endl;
-  std::cout << " Percentage of mis-identified CC events              : " << (reco_topology_cc - correctly_reconstructed_cc)/double(true_topology_cc) * 100    << std::endl; 
+  std::cout << " Impurity of reconstructed CC events                 : " << (reco_topology_cc - correctly_reconstructed_cc)/double(reco_topology_cc) * 100    << std::endl; 
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Percentage of correctly reconstructed CC 0Pi events : " << correctly_reconstructed_0pi/double(true_topology_0pi) * 100                       << std::endl;
-  std::cout << " Percentage of mis-identified CC 0Pi events          : " << (reco_topology_0pi - correctly_reconstructed_0pi)/double(true_topology_0pi) * 100 << std::endl; 
+  std::cout << " Impurity of reconstructed CC 0Pi events             : " << (reco_topology_0pi - correctly_reconstructed_0pi)/double(reco_topology_0pi) * 100 << std::endl; 
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Percentage of correctly reconstructed CC 1Pi events : " << correctly_reconstructed_1pi/double(true_topology_1pi) * 100                       << std::endl;
-  std::cout << " Percentage of mis-identified CC 1Pi events          : " << (reco_topology_1pi - correctly_reconstructed_1pi)/double(true_topology_1pi) * 100 << std::endl; 
+  std::cout << " Impurity of reconstructed CC 1Pi events             : " << (reco_topology_1pi - correctly_reconstructed_1pi)/double(reco_topology_1pi) * 100 << std::endl; 
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Percentage of correctly reconstructed CC Pi0 events : " << correctly_reconstructed_pi0/double(true_topology_pi0) * 100                       << std::endl;
-  std::cout << " Percentage of mis-identified CC Pi0 events          : " << (reco_topology_pi0 - correctly_reconstructed_pi0)/double(true_topology_pi0) * 100 << std::endl; 
+  std::cout << " Impurity of reconstructed CC Pi0 events             : " << (reco_topology_pi0 - correctly_reconstructed_pi0)/double(reco_topology_pi0) * 100 << std::endl; 
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << "===========================================================" << std::endl;
 
