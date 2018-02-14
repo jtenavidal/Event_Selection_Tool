@@ -75,6 +75,7 @@
 ./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TArrayF.h
 ./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/Foption.h
 ./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TFitResultPtr.h
+./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TH2.h
 ./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TCanvas.h
 ./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TPad.h
 ./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TVirtualPad.h
@@ -91,5 +92,9 @@
 ./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TLegend.h
 ./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TPave.h
 ./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TBox.h
+./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TLatex.h
+./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TText.h
+./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TStyle.h
+./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/TColor.h
 ./test/NewMain_cpp.so: /hepstore/rjones/Software/ROOT/Install/include/root/cintdictversion.h /hepstore/rjones/Software/ROOT/Install/include/root/RVersion.h
 NewMain_cpp__ROOTBUILDVERSION= 5.34/36

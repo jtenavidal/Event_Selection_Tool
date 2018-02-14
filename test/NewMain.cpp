@@ -6,8 +6,13 @@
 #include <time.h>
 #include "TVector3.h"
 #include "TH1.h"
+#include "TH2.h"
 #include "TCanvas.h"
 #include "TLegend.h"
+#include "TLatex.h"
+#include "TStyle.h"
+#include "TColor.h"
+#include "TObjArray.h"
 
 using namespace selection;
 
@@ -34,14 +39,25 @@ int MainTest(){
   unsigned int correctly_reconstructed_0pi = 0;
   unsigned int true_topology_0pi           = 0;
   unsigned int reco_topology_0pi           = 0;
-  unsigned int protons_cc0pi               = 0;
-  unsigned int true_protons_cc0pi          = 0;
+  unsigned int true_ccqe                   = 0;
+  unsigned int true_ccmec                  = 0;
+  unsigned int true_ccdis                  = 0;
+  unsigned int true_ccres                  = 0;
+  unsigned int true_cccoh                  = 0;
+  unsigned int reco_ccqe                   = 0;
+  unsigned int reco_ccmec                  = 0;
+  unsigned int reco_ccdis                  = 0;
+  unsigned int reco_ccres                  = 0;
+  unsigned int reco_cccoh                  = 0;
+  unsigned int good_ccqe                   = 0;
+  unsigned int good_ccmec                  = 0;
+  unsigned int good_ccdis                  = 0;
+  unsigned int good_ccres                  = 0;
+  unsigned int good_cccoh                  = 0;
 
   unsigned int correctly_reconstructed_1pi = 0;
   unsigned int true_topology_1pi           = 0;
   unsigned int reco_topology_1pi           = 0;
-  unsigned int protons_cc1pi               = 0;
-  unsigned int true_protons_cc1pi          = 0;
 
   unsigned int correctly_reconstructed_pi0 = 0;
   unsigned int true_topology_pi0           = 0;
@@ -98,12 +114,13 @@ int MainTest(){
   }
 
   // Neutrino energy histograms
-  TH1F *h_reco_energy      = new TH1F("h_reco_energy",      "CC 0#pi neutrino energy",100,-0.5,2);
-  TH1F *h_good_reco_energy = new TH1F("h_good_reco_energy", "CC 0#pi neutrino energy",100,-0.5,2);
-  TH1F *h_true_energy      = new TH1F("h_true_energy",      "CC 0#pi neutrino energy",100,-0.5,2);
+  TH1F *h_reco_energy      = new TH1F("h_reco_energy",      "#nu_{#mu} CC 0#pi neutrino energy",100,-0.5,2);
+  TH1F *h_good_reco_energy = new TH1F("h_good_reco_energy", "#nu_{#mu} CC 0#pi neutrino energy",100,-0.5,2);
+  TH1F *h_true_energy      = new TH1F("h_true_energy",      "#nu_{#mu} CC 0#pi neutrino energy",100,-0.5,2);
+  TH2F *h_energy_cos       = new TH2F("h_energy_cos",       "#nu_{#mu} CC 0#pi neutino energy and opening angle", 50, -0.5, 2, 50, -1, 1);
 
   // Get CC 0pi true and reconstructed neutrino energies
-  std::vector<float> true_neutrino_energy, reco_neutrino_energy, good_reco_neutrino_energy;
+  std::vector<float> true_neutrino_energy, reco_neutrino_energy, good_reco_neutrino_energy, good_reco_cos_theta;
 
   for(unsigned int i = 0; i < events.size(); ++i){
 
@@ -138,8 +155,27 @@ int MainTest(){
       // Get reconstructed energy
       for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 13) {
         good_reco_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
-      }
 
+        TVector3 z;
+        z[0] = 0;
+        z[1] = 0;
+        z[2] = 1;
+
+        float p    = parts[i].GetMomentum().Mag();
+        float cth  = (1/p) * (parts[i].GetMomentum()).Dot(z);
+        good_reco_cos_theta.push_back(cth);
+      }
+      
+      // Nuance codes
+      if(e.GetIsCC()){
+      
+        if(e.GetNuanceCode() == 1001) good_ccqe++;
+        if(e.GetNuanceCode() == 10)   good_ccmec++;
+        if(e.GetNuanceCode() == 2 || e.GetNuanceCode() == 1091) good_ccdis++;
+        if(e.GetNuanceCode() == 1003 || e.GetNuanceCode() == 1004 || e.GetNuanceCode() == 1005) good_ccres++;
+        if(e.GetNuanceCode() == 1097) good_cccoh++;
+          
+      }
     }
     if(e.CheckRecoTopology(cc0pi_signal_map)) {
       
@@ -154,6 +190,17 @@ int MainTest(){
       for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 13) {
         reco_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
       }
+      
+      // Nuance codes
+      if(e.GetIsCC()){
+      
+        if(e.GetNuanceCode() == 1001) reco_ccqe++;
+        if(e.GetNuanceCode() == 10)   reco_ccmec++;
+        if(e.GetNuanceCode() == 2 || e.GetNuanceCode() == 1091) reco_ccdis++;
+        if(e.GetNuanceCode() == 1003 || e.GetNuanceCode() == 1004 || e.GetNuanceCode() == 1005) reco_ccres++;
+        if(e.GetNuanceCode() == 1097) reco_cccoh++;
+          
+      }
     }
     if(e.CheckMCTopology(cc0pi_signal_map)) {
      
@@ -162,11 +209,25 @@ int MainTest(){
     
       // Get true neutrino energy
       true_neutrino_energy.push_back(e.GetTrueNuEnergy());
+      
+      // Nuance codes
+      if(e.GetIsCC()){
+      
+        if(e.GetNuanceCode() == 1001) true_ccqe++;
+        if(e.GetNuanceCode() == 10)   true_ccmec++;
+        if(e.GetNuanceCode() == 2 || e.GetNuanceCode() == 1091) true_ccdis++;
+        if(e.GetNuanceCode() == 1003 || e.GetNuanceCode() == 1004 || e.GetNuanceCode() == 1005) true_ccres++;
+        if(e.GetNuanceCode() == 1097) true_cccoh++;
+          
+      }
     }
   }
   for( unsigned int i = 0; i < reco_neutrino_energy.size(); ++i)      h_reco_energy->Fill(reco_neutrino_energy[i]);
-  for( unsigned int i = 0; i < good_reco_neutrino_energy.size(); ++i) h_good_reco_energy->Fill(good_reco_neutrino_energy[i]);
   for( unsigned int i = 0; i < true_neutrino_energy.size(); ++i)      h_true_energy->Fill(true_neutrino_energy[i]);
+  for( unsigned int i = 0; i < good_reco_neutrino_energy.size(); ++i) {
+    h_good_reco_energy->Fill(good_reco_neutrino_energy[i]);
+    h_energy_cos->Fill(good_reco_neutrino_energy[i],good_reco_cos_theta[i]);
+  }
 
   std::cout << "===========================================================" << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
@@ -184,9 +245,24 @@ int MainTest(){
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Percentage of correctly reconstructed CC 0Pi events : " << correctly_reconstructed_0pi/double(true_topology_0pi) * 100                       << std::endl;
   std::cout << " Impurity of reconstructed CC 0Pi events             : " << (reco_topology_0pi - correctly_reconstructed_0pi)/double(reco_topology_0pi) * 100 << std::endl;
-  std::cout << " Number of reconstructed energies      : " << reco_neutrino_energy.size()      << std::endl;
-  std::cout << " Number of well reconstructed energies : " << good_reco_neutrino_energy.size() << std::endl;
-  std::cout << " Number of true energies               : " << true_neutrino_energy.size()      << std::endl;
+  std::cout << " Percentage of true " << std::endl;
+  std::cout << "      CC QE                                          : " << true_ccqe  / double(true_topology_0pi) * 100 << std::endl;
+  std::cout << "      CC MEC                                         : " << true_ccmec / double(true_topology_0pi) * 100 << std::endl;
+  std::cout << "      CC RES                                         : " << true_ccres / double(true_topology_0pi) * 100 << std::endl;
+  std::cout << "      CC DIS                                         : " << true_ccdis / double(true_topology_0pi) * 100 << std::endl;
+  std::cout << "      CC COH                                         : " << true_cccoh / double(true_topology_0pi) * 100 << std::endl;
+  std::cout << " Percentage of reconstructed " << std::endl;
+  std::cout << "      CC QE                                          : " << reco_ccqe  / double(reco_topology_0pi) * 100 << std::endl;
+  std::cout << "      CC MEC                                         : " << reco_ccmec / double(reco_topology_0pi) * 100 << std::endl;
+  std::cout << "      CC RES                                         : " << reco_ccres / double(reco_topology_0pi) * 100 << std::endl;
+  std::cout << "      CC DIS                                         : " << reco_ccdis / double(reco_topology_0pi) * 100 << std::endl;
+  std::cout << "      CC COH                                         : " << reco_cccoh / double(reco_topology_0pi) * 100 << std::endl;
+  std::cout << " Percentage of well reconstructed " << std::endl;
+  std::cout << "      CC QE                                          : " << good_ccqe  / double(correctly_reconstructed_0pi) * 100 << std::endl;
+  std::cout << "      CC MEC                                         : " << good_ccmec / double(correctly_reconstructed_0pi) * 100 << std::endl;
+  std::cout << "      CC RES                                         : " << good_ccres / double(correctly_reconstructed_0pi) * 100 << std::endl;
+  std::cout << "      CC DIS                                         : " << good_ccdis / double(correctly_reconstructed_0pi) * 100 << std::endl;
+  std::cout << "      CC COH                                         : " << good_cccoh / double(correctly_reconstructed_0pi) * 100 << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << "===========================================================" << std::endl;
 
@@ -211,7 +287,19 @@ int MainTest(){
   l->Draw();
 
   c->SaveAs("plots/cc0pi_nu_energy.root");
+  c->Clear();
 
+  gStyle->SetPalette(55);
+  gStyle->SetNumberContours(250);
+
+  h_energy_cos->SetStats(kFALSE);
+  h_energy_cos->GetXaxis()->SetTitle("Neutrino energy [GeV]");
+  h_energy_cos->GetYaxis()->SetTitle("cos#theta_{#mu}");
+  h_energy_cos->Draw("colz");
+ 
+  c->SaveAs("plots/cc0pi_energy_cos.root");
+  c->Clear();
+  
   time_t rawtime_end;
   struct tm * timeinfo_end;
   time (&rawtime_end);
