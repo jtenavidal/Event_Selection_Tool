@@ -54,6 +54,8 @@ int MainTest(){
   unsigned int good_ccdis                  = 0;
   unsigned int good_ccres                  = 0;
   unsigned int good_cccoh                  = 0;
+  unsigned int proton_multiplicity_reco    = 0;
+  unsigned int proton_multiplicity_good    = 0;
 
   unsigned int correctly_reconstructed_1pi = 0;
   unsigned int true_topology_1pi           = 0;
@@ -114,13 +116,16 @@ int MainTest(){
   }
 
   // Neutrino energy histograms
-  TH1F *h_reco_energy      = new TH1F("h_reco_energy",      "#nu_{#mu} CC 0#pi neutrino energy",100,-0.5,2);
-  TH1F *h_good_reco_energy = new TH1F("h_good_reco_energy", "#nu_{#mu} CC 0#pi neutrino energy",100,-0.5,2);
-  TH1F *h_true_energy      = new TH1F("h_true_energy",      "#nu_{#mu} CC 0#pi neutrino energy",100,-0.5,2);
-  TH2F *h_energy_cos       = new TH2F("h_energy_cos",       "#nu_{#mu} CC 0#pi neutino energy and opening angle", 50, -0.5, 2, 50, -1, 1);
+  TH1F *h_reco_energy         = new TH1F("h_reco_energy",         "#nu_{#mu} CC 0#pi neutrino energy",100,-0.5,2);
+  TH1F *h_good_energy         = new TH1F("h_good_energy",         "#nu_{#mu} CC 0#pi neutrino energy",100,-0.5,2);
+  TH1F *h_true_energy         = new TH1F("h_true_energy",         "#nu_{#mu} CC 0#pi neutrino energy",100,-0.5,2);
+  TH2F *h_reco_energy_cos     = new TH2F("h_reco_energy_cos",     "#nu_{#mu} CC 0#pi neutino energy and opening angle", 50, -0.5, 2, 50, -1, 1);
+  TH2F *h_good_energy_cos     = new TH2F("h_good_energy_cos",     "#nu_{#mu} CC 0#pi neutino energy and opening angle", 50, -0.5, 2, 50, -1, 1);
+  TH2F *h_reco_energy_proton  = new TH2F("h_reco_energy_protons", "#nu_{#mu} CC 0#pi neutino energy and proton multiplicity", 5, 0, 5, 50, -0.5, 2);
+  TH2F *h_good_energy_proton  = new TH2F("h_good_energy_protons", "#nu_{#mu} CC 0#pi neutino energy and proton multiplicity", 5, 0, 5, 50, -0.5, 2);
 
   // Get CC 0pi true and reconstructed neutrino energies
-  std::vector<float> true_neutrino_energy, reco_neutrino_energy, good_reco_neutrino_energy, good_reco_cos_theta;
+  std::vector<float> true_neutrino_energy, reco_neutrino_energy, good_neutrino_energy, good_cos_theta, reco_cos_theta, good_proton_multiplicity, reco_proton_multiplicity;
 
   for(unsigned int i = 0; i < events.size(); ++i){
 
@@ -152,9 +157,12 @@ int MainTest(){
       ParticleList parts       = e.GetRecoParticleList();
       unsigned int n_particles = e.GetRecoParticleList().size();
       
+      for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 2212) proton_multiplicity_good++;
+      good_proton_multiplicity.push_back(proton_multiplicity_good);
+      
       // Get reconstructed energy
       for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 13) {
-        good_reco_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
+        good_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
 
         TVector3 z;
         z[0] = 0;
@@ -163,7 +171,8 @@ int MainTest(){
 
         float p    = parts[i].GetMomentum().Mag();
         float cth  = (1/p) * (parts[i].GetMomentum()).Dot(z);
-        good_reco_cos_theta.push_back(cth);
+        good_cos_theta.push_back(cth);
+
       }
       
       // Nuance codes
@@ -186,9 +195,21 @@ int MainTest(){
       ParticleList parts       = e.GetRecoParticleList();
       unsigned int n_particles = e.GetRecoParticleList().size();
       
+      for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 2212) proton_multiplicity_reco++;
+      reco_proton_multiplicity.push_back(proton_multiplicity_reco);
+      
       // Get reconstructed energy
       for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 13) {
         reco_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
+        
+        TVector3 z;
+        z[0] = 0;
+        z[1] = 0;
+        z[2] = 1;
+
+        float p    = parts[i].GetMomentum().Mag();
+        float cth  = (1/p) * (parts[i].GetMomentum()).Dot(z);
+        reco_cos_theta.push_back(cth);
       }
       
       // Nuance codes
@@ -222,11 +243,14 @@ int MainTest(){
       }
     }
   }
-  for( unsigned int i = 0; i < reco_neutrino_energy.size(); ++i)      h_reco_energy->Fill(reco_neutrino_energy[i]);
-  for( unsigned int i = 0; i < true_neutrino_energy.size(); ++i)      h_true_energy->Fill(true_neutrino_energy[i]);
-  for( unsigned int i = 0; i < good_reco_neutrino_energy.size(); ++i) {
-    h_good_reco_energy->Fill(good_reco_neutrino_energy[i]);
-    h_energy_cos->Fill(good_reco_neutrino_energy[i],good_reco_cos_theta[i]);
+  for( unsigned int i = 0; i < true_neutrino_energy.size(); ++i) h_true_energy->Fill(true_neutrino_energy[i]);
+  for( unsigned int i = 0; i < reco_neutrino_energy.size(); ++i) {
+    h_reco_energy_proton->Fill(reco_proton_multiplicity[i],reco_neutrino_energy[i]);
+    h_reco_energy_cos->Fill(reco_neutrino_energy[i],reco_cos_theta[i]);
+  }
+  for( unsigned int i = 0; i < good_neutrino_energy.size(); ++i) {
+    h_good_energy_proton->Fill(good_proton_multiplicity[i],good_neutrino_energy[i]);
+    h_good_energy_cos->Fill(good_neutrino_energy[i],good_cos_theta[i]);
   }
 
   std::cout << "===========================================================" << std::endl;
@@ -266,38 +290,62 @@ int MainTest(){
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << "===========================================================" << std::endl;
 
+  gStyle->SetPalette(55);
+  gStyle->SetNumberContours(250);
+
   TCanvas *c = new TCanvas();
   TLegend *l = new TLegend( 0.58, 0.68, 0.88, 0.88 );
 
   l->AddEntry( h_true_energy,      " True ",               "l" );
   l->AddEntry( h_reco_energy,      " Reconstructed ",      "l" );
-  l->AddEntry( h_good_reco_energy, " Well reconstructed ", "l" );
+  l->AddEntry( h_good_energy,      " Well reconstructed ", "l" );
     
   h_true_energy->SetLineColor(2);
   h_true_energy->SetStats(kFALSE);
   h_reco_energy->SetLineColor(4);
   h_reco_energy->SetStats(kFALSE);
   h_reco_energy->GetXaxis()->SetTitle("Neutrino Energy [GeV]");
-  h_good_reco_energy->SetLineColor(6);
-  h_good_reco_energy->SetStats(kFALSE);
+  h_good_energy->SetLineColor(6);
+  h_good_energy->SetStats(kFALSE);
 
   h_reco_energy->Draw();
-  h_good_reco_energy->Draw("same");
+  h_good_energy->Draw("same");
   h_true_energy->Draw("same");
   l->Draw();
 
   c->SaveAs("plots/cc0pi_nu_energy.root");
   c->Clear();
 
-  gStyle->SetPalette(55);
-  gStyle->SetNumberContours(250);
-
-  h_energy_cos->SetStats(kFALSE);
-  h_energy_cos->GetXaxis()->SetTitle("Neutrino energy [GeV]");
-  h_energy_cos->GetYaxis()->SetTitle("cos#theta_{#mu}");
-  h_energy_cos->Draw("colz");
+  h_reco_energy_cos->SetStats(kFALSE);
+  h_reco_energy_cos->GetXaxis()->SetTitle("Neutrino energy [GeV]");
+  h_reco_energy_cos->GetYaxis()->SetTitle("cos#theta_{#mu}");
+  h_reco_energy_cos->Draw("colz");
  
-  c->SaveAs("plots/cc0pi_energy_cos.root");
+  c->SaveAs("plots/cc0pi_reco_energy_cos.root");
+  c->Clear();
+  
+  h_good_energy_cos->SetStats(kFALSE);
+  h_good_energy_cos->GetXaxis()->SetTitle("Neutrino energy [GeV]");
+  h_good_energy_cos->GetYaxis()->SetTitle("cos#theta_{#mu}");
+  h_good_energy_cos->Draw("colz");
+ 
+  c->SaveAs("plots/cc0pi_good_energy_cos.root");
+  c->Clear();
+  
+  h_reco_energy_proton->SetStats(kFALSE);
+  h_reco_energy_proton->GetXaxis()->SetTitle("Proton multiplicity");
+  h_reco_energy_proton->GetYaxis()->SetTitle("Neutrino energy [GeV]");
+  h_reco_energy_proton->Draw("colz");
+ 
+  c->SaveAs("plots/cc0pi_reco_energy_proton.root");
+  c->Clear();
+  
+  h_good_energy_proton->SetStats(kFALSE);
+  h_good_energy_proton->GetXaxis()->SetTitle("Proton multiplicity");
+  h_good_energy_proton->GetYaxis()->SetTitle("Neutrino energy [GeV]");
+  h_good_energy_proton->Draw("colz");
+ 
+  c->SaveAs("plots/cc0pi_good_energy_proton.root");
   c->Clear();
   
   time_t rawtime_end;
