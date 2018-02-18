@@ -3,6 +3,7 @@
 
 #include "Particle.h"
 #include "TVector3.h"
+#include <iostream>
 #include <map>
 
 namespace selection{
@@ -28,7 +29,7 @@ namespace selection{
        * @param  mc_vertex Monte Carlo neutrino vertex 
        * @param  reco_vertex reconstructed neutrino vertex
        */
-      Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex, const float neutrino_energy);
+      Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const int neutrino_pdg, const unsigned int charged_pi, const unsigned int neutral_pi, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex, const float neutrino_energy);
         
       /**
        * @brief  CountMCParticlesWithPdg
@@ -82,6 +83,26 @@ namespace selection{
       int GetNuanceCode() const;
 
       /**
+       * @brief  Get the neutrino pdg code in the event
+       */
+      int GetNeutrinoPdgCode() const;
+
+      /**
+       * @brief  Get the number of charged pions
+       */
+      int GetNChargedPions() const;
+      
+      /**
+       * @brief  Get the number of neutral pions
+       */
+      int GetNNeutralPions() const;
+      
+      /**
+       * @brief  Get the physical process
+       */
+      int GetPhysicalProcess() const;
+      
+      /**
        * @brief  Get if the event is CC or NC
        */
       bool GetIsCC() const;
@@ -110,6 +131,20 @@ namespace selection{
        */
       float GetCC0piRecoNeutrinoEnergy(const Particle &particle) const;
 
+      /**
+       * @brief  Get the most energetic reconstructed particle
+       *
+       * @return Particle most energetic reco
+       */
+      Particle GetMostEnergeticRecoParticle() const;
+
+      /**
+       * @brief  Get the most energetic true particle
+       *
+       * @return Particle most energetic true
+       */
+      Particle GetMostEnergeticTrueParticle() const;
+
     private : 
 
       /**
@@ -130,10 +165,20 @@ namespace selection{
        */
       bool CheckTopology(const TopologyMap &topology, const ParticleList &particle_list) const;
 
+      /**
+       * @brief  Get the most energetic particle
+       *
+       * @return Particle most energetic
+       */
+      Particle GetMostEnergeticParticle(const ParticleList &particle_list) const;
+
       // Member variables
       ParticleList       m_mc_particles;       ///< vector of Monte Carlo particles
       ParticleList       m_reco_particles;     ///< vector of reconstructed particles
       unsigned int       m_nuance;             ///< Nuance code/interaction of the event
+      int                m_nu_pdg;             ///< Neutrino pdg code of the event
+      unsigned int       m_charged_pi;         ///< Number of charged pions in the event
+      unsigned int       m_neutral_pi;         ///< Number of neutral pions in the event
       bool               m_is_cc;              ///< whether the event contains and CC or NC interaction
       TVector3           m_reco_vertex;        ///< reconstructed neutrino vertex
       TVector3           m_mc_vertex;          ///< reconstructed neutrino vertex
@@ -141,6 +186,6 @@ namespace selection{
 
 
   }; // Event
-} // Selection
+} // selection
 
 #endif

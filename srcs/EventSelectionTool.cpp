@@ -10,7 +10,7 @@
 namespace selection{
  
   void EventSelectionTool::LoadEventList(const std::string &file_name, EventList &event_list){
-  
+ 
     TFile f(file_name.c_str());
     TTree *t_event    = (TTree*) f.Get("event_tree");
     TTree *t_particle = (TTree*) f.Get("particle_tree");
@@ -23,8 +23,11 @@ namespace selection{
     TBranch *b_t_vertex        = t_event->GetBranch("t_vertex");
     TBranch *b_t_nuance        = t_event->GetBranch("t_interaction");
     TBranch *b_t_iscc          = t_event->GetBranch("t_iscc");
+    TBranch *b_t_nu_pdgcode    = t_event->GetBranch("t_nu_pdgcode");
+    TBranch *b_t_charged_pions = t_event->GetBranch("t_charged_pions");
+    TBranch *b_t_neutral_pions = t_event->GetBranch("t_neutral_pions");
     TBranch *b_t_vertex_energy = t_event->GetBranch("t_vertex_energy");
-      
+    
     unsigned int n_events = t_event->GetEntries();
 
     unsigned int start_tracks      = 0;
@@ -39,7 +42,8 @@ namespace selection{
       ShowerList   showers;
 
       TVector3 r_vertex, t_vertex;
-      unsigned int nuance = std::numeric_limits<unsigned int>::max();
+      unsigned int nuance, pions_ch, pions_neu;
+      int neutrino_pdg;
       bool iscc(false);
       float neu_energy;
 
@@ -55,6 +59,9 @@ namespace selection{
       t_vertex[2]  = b_t_vertex->GetLeaf("t_vertex")->GetValue(2);
       nuance       = b_t_nuance->GetLeaf("t_interaction")->GetValue();
       iscc         = b_t_iscc->GetLeaf("t_iscc")->GetValue();
+      neutrino_pdg = b_t_nu_pdgcode->GetLeaf("t_nu_pdgcode")->GetValue();
+      pions_ch     = b_t_charged_pions->GetLeaf("t_charged_pions")->GetValue();
+      pions_neu    = b_t_neutral_pions->GetLeaf("t_neutral_pions")->GetValue();
       neu_energy   = b_t_vertex_energy->GetLeaf("t_vertex_energy")->GetValue();
    
       std::pair<int,int> event_identification(event_id,time_now);
@@ -65,7 +72,7 @@ namespace selection{
       EventSelectionTool::GetRecoParticleFromTrack(tracks,             recoparticles);
       EventSelectionTool::GetRecoParticleFromShower(showers, r_vertex, recoparticles);
       
-      event_list.push_back(Event(mcparticles, recoparticles, nuance, iscc, t_vertex, r_vertex, neu_energy));
+      event_list.push_back(Event(mcparticles, recoparticles, nuance, neutrino_pdg, pions_ch, pions_neu, iscc, t_vertex, r_vertex, neu_energy));
 
       start_tracks      += tracks.size();
       start_showers     += showers.size();
