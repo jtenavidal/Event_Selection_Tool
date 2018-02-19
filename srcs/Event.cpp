@@ -2,7 +2,7 @@
 
 namespace selection{
   
-  Event::Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const int neutrino_pdg, const unsigned int charged_pi, const unsigned int neutral_pi, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex, const float neutrino_energy) :
+  Event::Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const int neutrino_pdg, const unsigned int charged_pi, const unsigned int neutral_pi, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex, const float neutrino_energy, const unsigned int file_number, const unsigned int event_id) :
     m_mc_particles(mc_particles),
     m_reco_particles(reco_particles),
     m_nuance(nuance),
@@ -12,7 +12,9 @@ namespace selection{
     m_is_cc(is_cc),
     m_mc_vertex(mc_vertex),
     m_reco_vertex(reco_vertex), 
-    m_neutrino_energy(neutrino_energy) {}
+    m_neutrino_energy(neutrino_energy), 
+    m_file_number(file_number), 
+    m_event_id(event_id) {}
 
   //------------------------------------------------------------------------------------------ 
     
@@ -171,7 +173,20 @@ namespace selection{
     return m_neutrino_energy;
 
   }
+
+  //------------------------------------------------------------------------------------------ 
+
+  unsigned int Event::GetID() const{
+
+    return m_event_id;
+  }
   
+  //------------------------------------------------------------------------------------------ 
+
+  unsigned int Event::GetFileNumber() const{
+
+    return m_file_number;
+  }
   //------------------------------------------------------------------------------------------ 
 
   unsigned int Event::CountParticlesWithPdg(const int pdg, const ParticleList &particle_list) const{

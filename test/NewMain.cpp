@@ -114,7 +114,7 @@ int MainTest(){
             
     strcpy( file_name, name.c_str() );
       
-    EventSelectionTool::LoadEventList(file_name, events);
+    EventSelectionTool::LoadEventList(file_name, events, i);
   }
 
   // Neutrino energy histograms

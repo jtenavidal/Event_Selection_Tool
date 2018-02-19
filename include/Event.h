@@ -29,7 +29,7 @@ namespace selection{
        * @param  mc_vertex Monte Carlo neutrino vertex 
        * @param  reco_vertex reconstructed neutrino vertex
        */
-      Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const int neutrino_pdg, const unsigned int charged_pi, const unsigned int neutral_pi, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex, const float neutrino_energy);
+      Event(const ParticleList &mc_particles, const ParticleList &reco_particles, const unsigned int nuance, const int neutrino_pdg, const unsigned int charged_pi, const unsigned int neutral_pi, const bool is_cc, const TVector3 &mc_vertex, const TVector3 &reco_vertex, const float neutrino_energy, const unsigned int file_number, const unsigned int event_id);
         
       /**
        * @brief  CountMCParticlesWithPdg
@@ -132,6 +132,16 @@ namespace selection{
       float GetCC0piRecoNeutrinoEnergy(const Particle &particle) const;
 
       /**
+       * @brief  Get the event id 
+       */
+      unsigned int GetID() const;
+
+      /**
+       * @brief  Get the file number 
+       */
+      unsigned int GetFileNumber() const;
+ 
+      /**
        * @brief  Get the most energetic reconstructed particle
        *
        * @return Particle most energetic reco
@@ -173,16 +183,18 @@ namespace selection{
       Particle GetMostEnergeticParticle(const ParticleList &particle_list) const;
 
       // Member variables
-      ParticleList       m_mc_particles;       ///< vector of Monte Carlo particles
-      ParticleList       m_reco_particles;     ///< vector of reconstructed particles
-      unsigned int       m_nuance;             ///< Nuance code/interaction of the event
-      int                m_nu_pdg;             ///< Neutrino pdg code of the event
-      unsigned int       m_charged_pi;         ///< Number of charged pions in the event
-      unsigned int       m_neutral_pi;         ///< Number of neutral pions in the event
-      bool               m_is_cc;              ///< whether the event contains and CC or NC interaction
-      TVector3           m_reco_vertex;        ///< reconstructed neutrino vertex
-      TVector3           m_mc_vertex;          ///< reconstructed neutrino vertex
-      float              m_neutrino_energy;    ///< true neutrino energy
+      ParticleList   m_mc_particles;       ///< vector of Monte Carlo particles
+      ParticleList   m_reco_particles;     ///< vector of reconstructed particles
+      unsigned int   m_nuance;             ///< Nuance code/interaction of the event
+      int            m_nu_pdg;             ///< Neutrino pdg code of the event
+      unsigned int   m_charged_pi;         ///< Number of charged pions in the event
+      unsigned int   m_neutral_pi;         ///< Number of neutral pions in the event
+      bool           m_is_cc;              ///< whether the event contains and CC or NC interaction
+      TVector3       m_reco_vertex;        ///< reconstructed neutrino vertex
+      TVector3       m_mc_vertex;          ///< reconstructed neutrino vertex
+      float          m_neutrino_energy;    ///< true neutrino energy
+      unsigned int   m_file_number;        ///< file number 
+      unsigned int   m_event_id;           ///< event number 
 
 
   }; // Event

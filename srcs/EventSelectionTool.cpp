@@ -9,7 +9,7 @@
 
 namespace selection{
  
-  void EventSelectionTool::LoadEventList(const std::string &file_name, EventList &event_list){
+  void EventSelectionTool::LoadEventList(const std::string &file_name, EventList &event_list, const unsigned int file_number) {
  
     TFile f(file_name.c_str());
     TTree *t_event    = (TTree*) f.Get("event_tree");
@@ -42,15 +42,15 @@ namespace selection{
       ShowerList   showers;
 
       TVector3 r_vertex, t_vertex;
-      unsigned int nuance, pions_ch, pions_neu;
+      unsigned int nuance, pions_ch, pions_neu, event_id, time_now;
       int neutrino_pdg;
       bool iscc(false);
       float neu_energy;
 
       t_event->GetEntry(j);
 
-      int event_id = b_event_id->GetLeaf("event_id")->GetValue();
-      int time_now = b_time_now->GetLeaf("time_now")->GetValue();
+      event_id     = b_event_id->GetLeaf("event_id")->GetValue();
+      time_now     = b_time_now->GetLeaf("time_now")->GetValue();
       r_vertex[0]  = b_r_vertex->GetLeaf("r_vertex")->GetValue(0);
       r_vertex[1]  = b_r_vertex->GetLeaf("r_vertex")->GetValue(1);
       r_vertex[2]  = b_r_vertex->GetLeaf("r_vertex")->GetValue(2);
@@ -72,7 +72,7 @@ namespace selection{
       EventSelectionTool::GetRecoParticleFromTrack(tracks,             recoparticles);
       EventSelectionTool::GetRecoParticleFromShower(showers, r_vertex, recoparticles);
       
-      event_list.push_back(Event(mcparticles, recoparticles, nuance, neutrino_pdg, pions_ch, pions_neu, iscc, t_vertex, r_vertex, neu_energy));
+      event_list.push_back(Event(mcparticles, recoparticles, nuance, neutrino_pdg, pions_ch, pions_neu, iscc, t_vertex, r_vertex, neu_energy, file_number, event_id));
 
       start_tracks      += tracks.size();
       start_showers     += showers.size();
