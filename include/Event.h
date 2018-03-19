@@ -182,6 +182,7 @@ namespace selection{
        */
       Particle GetMostEnergeticParticle(const ParticleList &particle_list) const;
 
+      
       // Member variables
       ParticleList   m_mc_particles;       ///< vector of Monte Carlo particles
       ParticleList   m_reco_particles;     ///< vector of reconstructed particles

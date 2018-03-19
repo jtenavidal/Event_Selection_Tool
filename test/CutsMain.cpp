@@ -149,135 +149,138 @@ int MainTest(){
     // Do analysis
     Event &e(events[i]);
 
-    if(e.CheckMCTopology(cc_signal_map) && e.CheckRecoTopology(cc_signal_map)) correctly_reconstructed_cc++;
-    if(e.CheckRecoTopology(cc_signal_map)) reco_topology_cc++;
-    if(e.CheckMCTopology(cc_signal_map))   true_topology_cc++;
+    // Around true energy peak
+    if(e.GetTrueNuEnergy() < 0.8 && e.GetTrueNuEnergy() > 0.6){
+      if(e.CheckMCTopology(cc_signal_map) && e.CheckRecoTopology(cc_signal_map)) correctly_reconstructed_cc++;
+      if(e.CheckRecoTopology(cc_signal_map)) reco_topology_cc++;
+      if(e.CheckMCTopology(cc_signal_map))   true_topology_cc++;
 
-    if(e.CheckMCTopology(nc_signal_map) && e.CheckRecoTopology(nc_signal_map)) correctly_reconstructed_nc++;
-    if(e.CheckRecoTopology(nc_signal_map)) reco_topology_nc++;
-    if(e.CheckMCTopology(nc_signal_map))   true_topology_nc++;
-    
-    if(e.CheckMCTopology(cc1pi_signal_map) && e.CheckRecoTopology(cc1pi_signal_map)) correctly_reconstructed_1pi++;
-    if(e.CheckRecoTopology(cc1pi_signal_map)) reco_topology_1pi++;
-    if(e.CheckMCTopology(cc1pi_signal_map))   true_topology_1pi++;
-    
-    if(e.CheckMCTopology(ccpi0_signal_map) && e.CheckRecoTopology(ccpi0_signal_map)) correctly_reconstructed_pi0++;
-    if(e.CheckRecoTopology(ccpi0_signal_map)) reco_topology_pi0++;
-    if(e.CheckMCTopology(ccpi0_signal_map))   true_topology_pi0++;
-    
-    if(e.CheckMCTopology(cc0pi_signal_map) && e.CheckRecoTopology(cc0pi_signal_map)) {
+      if(e.CheckMCTopology(nc_signal_map) && e.CheckRecoTopology(nc_signal_map)) correctly_reconstructed_nc++;
+      if(e.CheckRecoTopology(nc_signal_map)) reco_topology_nc++;
+      if(e.CheckMCTopology(nc_signal_map))   true_topology_nc++;
       
-      // Counter
-      correctly_reconstructed_0pi++;
+      if(e.CheckMCTopology(cc1pi_signal_map) && e.CheckRecoTopology(cc1pi_signal_map)) correctly_reconstructed_1pi++;
+      if(e.CheckRecoTopology(cc1pi_signal_map)) reco_topology_1pi++;
+      if(e.CheckMCTopology(cc1pi_signal_map))   true_topology_1pi++;
       
-      // Get the well selected reconstructed neutrino energy
-      ParticleList parts       = e.GetRecoParticleList();
-      unsigned int n_particles = e.GetRecoParticleList().size();
+      if(e.CheckMCTopology(ccpi0_signal_map) && e.CheckRecoTopology(ccpi0_signal_map)) correctly_reconstructed_pi0++;
+      if(e.CheckRecoTopology(ccpi0_signal_map)) reco_topology_pi0++;
+      if(e.CheckMCTopology(ccpi0_signal_map))   true_topology_pi0++;
       
-      for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 2212) {
-        proton_multiplicity_good++;
-        proton_energy_sum_good += parts[i].GetEnergy();
-      }
-
-      good_proton_multiplicity.push_back(proton_multiplicity_good);
-      good_proton_energy_sum.push_back(proton_energy_sum_good);
-      
-      // Get reconstructed energy
-      for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 13) {
-        good_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
-        good_muon_energy.push_back(parts[i].GetEnergy());
-
-        efficiency_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]) / e.GetTrueNuEnergy());
-
-        TVector3 z;
-        z[0] = 0;
-        z[1] = 0;
-        z[2] = 1;
-
-        float p    = parts[i].GetMomentum().Mag();
-        float cth  = (1/p) * (parts[i].GetMomentum()).Dot(z);
-        good_cos_theta.push_back(cth);
-
-      }
-      
-      // Nuance codes
-      if(e.GetIsCC()){
-      
-        if(e.GetNuanceCode() == 1001) good_ccqe++;
-        if(e.GetNuanceCode() == 10)   good_ccmec++;
-        if(e.GetNuanceCode() == 2 || e.GetNuanceCode() == 1091) good_ccdis++;
-        if(e.GetNuanceCode() == 1003 || e.GetNuanceCode() == 1004 || e.GetNuanceCode() == 1005) good_ccres++;
-        if(e.GetNuanceCode() == 1097) good_cccoh++;
-          
-      }
-    }
-    if(e.CheckRecoTopology(cc0pi_signal_map)) {
-      
-      // Counter
-      reco_topology_0pi++;
-
-      // Get the well selected reconstructed neutrino energy
-      ParticleList parts       = e.GetRecoParticleList();
-      unsigned int n_particles = e.GetRecoParticleList().size();
-      
-      for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 2212){
-        proton_multiplicity_reco++;
-        proton_energy_sum_reco += parts[i].GetEnergy();
-      }
-      reco_proton_multiplicity.push_back(proton_multiplicity_reco);
-      reco_proton_energy_sum.push_back(proton_energy_sum_reco);
-      
-      // Get reconstructed energy
-      for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 13) {
-        reco_muon_energy.push_back(parts[i].GetEnergy());
-        reco_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
+      if(e.CheckMCTopology(cc0pi_signal_map) && e.CheckRecoTopology(cc0pi_signal_map)) {
         
-        TVector3 z;
-        z[0] = 0;
-        z[1] = 0;
-        z[2] = 1;
+        // Counter
+        correctly_reconstructed_0pi++;
+        
+        // Get the well selected reconstructed neutrino energy
+        ParticleList parts       = e.GetRecoParticleList();
+        unsigned int n_particles = e.GetRecoParticleList().size();
+        
+        for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 2212) {
+          proton_multiplicity_good++;
+          proton_energy_sum_good += parts[i].GetEnergy();
+        }
 
-        float p    = parts[i].GetMomentum().Mag();
-        float cth  = (1/p) * (parts[i].GetMomentum()).Dot(z);
-        reco_cos_theta.push_back(cth);
+        good_proton_multiplicity.push_back(proton_multiplicity_good);
+        good_proton_energy_sum.push_back(proton_energy_sum_good);
+        
+        // Get reconstructed energy
+        for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 13) {
+          good_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
+          good_muon_energy.push_back(parts[i].GetEnergy());
+
+          efficiency_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]) / e.GetTrueNuEnergy());
+
+          TVector3 z;
+          z[0] = 0;
+          z[1] = 0;
+          z[2] = 1;
+
+          float p    = parts[i].GetMomentum().Mag();
+          float cth  = (1/p) * (parts[i].GetMomentum()).Dot(z);
+          good_cos_theta.push_back(cth);
+
+        }
+        
+        // Nuance codes
+        if(e.GetIsCC()){
+        
+          if(e.GetNuanceCode() == 1001) good_ccqe++;
+          if(e.GetNuanceCode() == 10)   good_ccmec++;
+          if(e.GetNuanceCode() == 2 || e.GetNuanceCode() == 1091) good_ccdis++;
+          if(e.GetNuanceCode() == 1003 || e.GetNuanceCode() == 1004 || e.GetNuanceCode() == 1005) good_ccres++;
+          if(e.GetNuanceCode() == 1097) good_cccoh++;
+            
+        }
       }
-      
-      // Nuance codes
-      if(e.GetIsCC()){
-      
-        if(e.GetNuanceCode() == 1001) reco_ccqe++;
-        if(e.GetNuanceCode() == 10)   reco_ccmec++;
-        if(e.GetNuanceCode() == 2 || e.GetNuanceCode() == 1091) reco_ccdis++;
-        if(e.GetNuanceCode() == 1003 || e.GetNuanceCode() == 1004 || e.GetNuanceCode() == 1005) reco_ccres++;
-        if(e.GetNuanceCode() == 1097) reco_cccoh++;
+      if(e.CheckRecoTopology(cc0pi_signal_map)) {
+        
+        // Counter
+        reco_topology_0pi++;
+
+        // Get the well selected reconstructed neutrino energy
+        ParticleList parts       = e.GetRecoParticleList();
+        unsigned int n_particles = e.GetRecoParticleList().size();
+        
+        for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 2212){
+          proton_multiplicity_reco++;
+          proton_energy_sum_reco += parts[i].GetEnergy();
+        }
+        reco_proton_multiplicity.push_back(proton_multiplicity_reco);
+        reco_proton_energy_sum.push_back(proton_energy_sum_reco);
+        
+        // Get reconstructed energy
+        for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 13) {
+          reco_muon_energy.push_back(parts[i].GetEnergy());
+          reco_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
           
+          TVector3 z;
+          z[0] = 0;
+          z[1] = 0;
+          z[2] = 1;
+
+          float p    = parts[i].GetMomentum().Mag();
+          float cth  = (1/p) * (parts[i].GetMomentum()).Dot(z);
+          reco_cos_theta.push_back(cth);
+        }
+        
+        // Nuance codes
+        if(e.GetIsCC()){
+        
+          if(e.GetNuanceCode() == 1001) reco_ccqe++;
+          if(e.GetNuanceCode() == 10)   reco_ccmec++;
+          if(e.GetNuanceCode() == 2 || e.GetNuanceCode() == 1091) reco_ccdis++;
+          if(e.GetNuanceCode() == 1003 || e.GetNuanceCode() == 1004 || e.GetNuanceCode() == 1005) reco_ccres++;
+          if(e.GetNuanceCode() == 1097) reco_cccoh++;
+            
+        }
       }
-    }
-    if(e.CheckMCTopology(cc0pi_signal_map)) {
-     
-      // Counter
-      true_topology_0pi++;
-    
-      ParticleList parts       = e.GetMCParticleList();
-      unsigned int n_particles = e.GetMCParticleList().size();
-
-      // Get the MC true neutrino energy
-      mc_true_neutrino_energy.push_back(e.GetTrueNuEnergy());
-
-      for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 13) {
-        true_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
-        true_muon_energy.push_back(parts[i].GetEnergy());
-      }
-
-      // Nuance codes
-      if(e.GetIsCC()){
+      if(e.CheckMCTopology(cc0pi_signal_map)) {
+       
+        // Counter
+        true_topology_0pi++;
       
-        if(e.GetNuanceCode() == 1001) true_ccqe++;
-        if(e.GetNuanceCode() == 10)   true_ccmec++;
-        if(e.GetNuanceCode() == 2 || e.GetNuanceCode() == 1091) true_ccdis++;
-        if(e.GetNuanceCode() == 1003 || e.GetNuanceCode() == 1004 || e.GetNuanceCode() == 1005) true_ccres++;
-        if(e.GetNuanceCode() == 1097) true_cccoh++;
-          
+        ParticleList parts       = e.GetMCParticleList();
+        unsigned int n_particles = e.GetMCParticleList().size();
+
+        // Get the MC true neutrino energy
+        mc_true_neutrino_energy.push_back(e.GetTrueNuEnergy());
+
+        for( unsigned int i = 0; i < n_particles; ++i ) if(parts[i].GetPdgCode() == 13) {
+          true_neutrino_energy.push_back(e.GetCC0piRecoNeutrinoEnergy(parts[i]));
+          true_muon_energy.push_back(parts[i].GetEnergy());
+        }
+
+        // Nuance codes
+        if(e.GetIsCC()){
+        
+          if(e.GetNuanceCode() == 1001) true_ccqe++;
+          if(e.GetNuanceCode() == 10)   true_ccmec++;
+          if(e.GetNuanceCode() == 2 || e.GetNuanceCode() == 1091) true_ccdis++;
+          if(e.GetNuanceCode() == 1003 || e.GetNuanceCode() == 1004 || e.GetNuanceCode() == 1005) true_ccres++;
+          if(e.GetNuanceCode() == 1097) true_cccoh++;
+            
+        }
       }
     }
   }

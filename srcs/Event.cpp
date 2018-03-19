@@ -62,7 +62,7 @@ namespace selection{
     return this->GetMostEnergeticParticle(m_mc_particles);
 
   }
-
+  
   //------------------------------------------------------------------------------------------ 
 
   ParticleList Event::GetMCParticleList() const{
@@ -252,7 +252,7 @@ namespace selection{
     return reco;
   
   }
-  
+
   Particle Event::GetMostEnergeticParticle(const ParticleList &particle_list) const{
 
     float highest_energy   = -std::numeric_limits<float>::max();
