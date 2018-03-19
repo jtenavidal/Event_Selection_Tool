@@ -9,22 +9,30 @@
 
 namespace selection{
  
-  void EventSelectionTool::LoadEventList(const std::string &file_name, EventList &event_list){
-  
+  void EventSelectionTool::LoadEventList(const std::string &file_name, EventList &event_list, const unsigned int file_number) {
+ 
     TFile f(file_name.c_str());
     TTree *t_event    = (TTree*) f.Get("event_tree");
     TTree *t_particle = (TTree*) f.Get("particle_tree");
     TTree *t_track    = (TTree*) f.Get("recotrack_tree");
     TTree *t_shower   = (TTree*) f.Get("recoshower_tree");
 
-    TBranch *b_event_id = t_event->GetBranch("event_id");
-    TBranch *b_time_now = t_event->GetBranch("time_now");
-    TBranch *b_r_vertex = t_event->GetBranch("r_vertex");
-    TBranch *b_t_vertex = t_event->GetBranch("t_vertex");
-    TBranch *b_t_nuance = t_event->GetBranch("t_interaction");
-    TBranch *b_t_iscc   = t_event->GetBranch("t_iscc");
-      
+    TBranch *b_event_id        = t_event->GetBranch("event_id");
+    TBranch *b_time_now        = t_event->GetBranch("time_now");
+    TBranch *b_r_vertex        = t_event->GetBranch("r_vertex");
+    TBranch *b_t_vertex        = t_event->GetBranch("t_vertex");
+    TBranch *b_t_nuance        = t_event->GetBranch("t_interaction");
+    TBranch *b_t_iscc          = t_event->GetBranch("t_iscc");
+    TBranch *b_t_nu_pdgcode    = t_event->GetBranch("t_nu_pdgcode");
+    TBranch *b_t_charged_pions = t_event->GetBranch("t_charged_pions");
+    TBranch *b_t_neutral_pions = t_event->GetBranch("t_neutral_pions");
+    TBranch *b_t_vertex_energy = t_event->GetBranch("t_vertex_energy");
+    
     unsigned int n_events = t_event->GetEntries();
+
+    unsigned int start_tracks      = 0;
+    unsigned int start_showers     = 0;
+    unsigned int start_mcparticles = 0;
 
     for(unsigned int j = 0; j < n_events; ++j){
     
@@ -34,13 +42,15 @@ namespace selection{
       ShowerList   showers;
 
       TVector3 r_vertex, t_vertex;
-      unsigned int nuance = std::numeric_limits<unsigned int>::max();
+      unsigned int nuance, pions_ch, pions_neu, event_id, time_now;
+      int neutrino_pdg;
       bool iscc(false);
+      float neu_energy;
 
       t_event->GetEntry(j);
 
-      int event_id = b_event_id->GetLeaf("event_id")->GetValue();
-      int time_now = b_time_now->GetLeaf("time_now")->GetValue();
+      event_id     = b_event_id->GetLeaf("event_id")->GetValue();
+      time_now     = b_time_now->GetLeaf("time_now")->GetValue();
       r_vertex[0]  = b_r_vertex->GetLeaf("r_vertex")->GetValue(0);
       r_vertex[1]  = b_r_vertex->GetLeaf("r_vertex")->GetValue(1);
       r_vertex[2]  = b_r_vertex->GetLeaf("r_vertex")->GetValue(2);
@@ -49,17 +59,24 @@ namespace selection{
       t_vertex[2]  = b_t_vertex->GetLeaf("t_vertex")->GetValue(2);
       nuance       = b_t_nuance->GetLeaf("t_interaction")->GetValue();
       iscc         = b_t_iscc->GetLeaf("t_iscc")->GetValue();
+      neutrino_pdg = b_t_nu_pdgcode->GetLeaf("t_nu_pdgcode")->GetValue();
+      pions_ch     = b_t_charged_pions->GetLeaf("t_charged_pions")->GetValue();
+      pions_neu    = b_t_neutral_pions->GetLeaf("t_neutral_pions")->GetValue();
+      neu_energy   = b_t_vertex_energy->GetLeaf("t_vertex_energy")->GetValue();
    
       std::pair<int,int> event_identification(event_id,time_now);
 
-      EventSelectionTool::GetTrackList(t_track,         event_identification, tracks);
-      EventSelectionTool::GetShowerList(t_shower,       event_identification, showers);
-      EventSelectionTool::GetMCParticleList(t_particle, event_identification, mcparticles);
-      EventSelectionTool::GetRecoParticleFromTrack(tracks, recoparticles);
+      EventSelectionTool::GetTrackList(start_tracks,           t_track,    event_identification, tracks);
+      EventSelectionTool::GetShowerList(start_showers,         t_shower,   event_identification, showers);
+      EventSelectionTool::GetMCParticleList(start_mcparticles, t_particle, event_identification, mcparticles);
+      EventSelectionTool::GetRecoParticleFromTrack(tracks,             recoparticles);
       EventSelectionTool::GetRecoParticleFromShower(showers, r_vertex, recoparticles);
       
-      event_list.push_back(Event(mcparticles, recoparticles, nuance, iscc, t_vertex, r_vertex));
+      event_list.push_back(Event(mcparticles, recoparticles, nuance, neutrino_pdg, pions_ch, pions_neu, iscc, t_vertex, r_vertex, neu_energy, file_number, event_id));
 
+      start_tracks      += tracks.size();
+      start_showers     += showers.size();
+      start_mcparticles += mcparticles.size();
     }
   }
 
@@ -100,7 +117,7 @@ namespace selection{
 
   //------------------------------------------------------------------------------------------ 
   
-  void EventSelectionTool::GetTrackList(TTree *track_tree, const std::pair<int, int> &unique_event, TrackList &track_list){
+  void EventSelectionTool::GetTrackList(unsigned int start, TTree *track_tree, const std::pair<int, int> &unique_event, TrackList &track_list){
    
     TBranch *b_event_id       = track_tree->GetBranch("event_id");
     TBranch *b_time_now       = track_tree->GetBranch("time_now");
@@ -151,7 +168,7 @@ namespace selection{
   }
   //------------------------------------------------------------------------------------------ 
   
-  void EventSelectionTool::GetShowerList(TTree *shower_tree, const std::pair<int, int> &unique_event, ShowerList &shower_list){
+  void EventSelectionTool::GetShowerList(unsigned int start, TTree *shower_tree, const std::pair<int, int> &unique_event, ShowerList &shower_list){
   
     TBranch *b_event_id   = shower_tree->GetBranch("event_id");
     TBranch *b_time_now   = shower_tree->GetBranch("time_now");
@@ -192,7 +209,7 @@ namespace selection{
 
   //------------------------------------------------------------------------------------------ 
   
-  void EventSelectionTool::GetMCParticleList(TTree *mcparticle_tree, const std::pair<int, int> &unique_event, ParticleList &mcparticle_list){
+  void EventSelectionTool::GetMCParticleList(unsigned int start, TTree *mcparticle_tree, const std::pair<int, int> &unique_event, ParticleList &mcparticle_list){
     
     TBranch *b_event_id = mcparticle_tree->GetBranch("event_id");
     TBranch *b_time_now = mcparticle_tree->GetBranch("time_now");
@@ -205,7 +222,7 @@ namespace selection{
     
     unsigned int n_entries = mcparticle_tree->GetEntries();
 
-    for(unsigned int i = 0; i < n_entries; ++i){
+      for(unsigned int i = 0; i < n_entries; ++i){
     
       mcparticle_tree->GetEntry(i);
       
@@ -244,32 +261,64 @@ namespace selection{
   
   void EventSelectionTool::GetRecoParticleFromTrack(const TrackList &track_list, ParticleList &recoparticle_list){
  
+    // Assign ridiculously short length to initiate the longest track length
+    float longest_track_length      = -std::numeric_limits<float>::max();
+    unsigned int longest_track_id   =  std::numeric_limits<unsigned int>::max();
+    
+    for(unsigned int i = 0; i < track_list.size(); ++i){
+    
+      const Track &candidate(track_list[i]);
+
+      // Get the lengths of the tracks and find the longest track and compare to the rest of
+      // the lengths
+      if(candidate.m_length > longest_track_length) {
+        longest_track_length = candidate.m_length;
+        longest_track_id     = i;
+      }
+    }
+
+    bool always_longest(true);
+
+    // Loop over track list
+    for(unsigned int id = 0; id < track_list.size(); ++id){
+
+      const Track &track(track_list[id]);
+      if(track.m_length*1.5 >= longest_track_length && id != longest_track_id) always_longest = false;
+
+    }
+   
     // Muon candidates 
     std::vector<unsigned int> mu_candidates;
 
     // Loop over track list
     for(unsigned int id = 0; id < track_list.size(); ++id){
-   
+
       const Track &track(track_list[id]);
 
       // Use PIDA values to find pions, protons and kaons
       int pida_pdg = EventSelectionTool::GetPdgByPIDA(track);
 
-      if(pida_pdg == 13) 
+      // If the muon has not been found by length and its PIDA value is 13
+      // Call the track a candidate muon
+      if(pida_pdg == 13 || id == longest_track_id || always_longest) { 
         mu_candidates.push_back(id);
+      }
       else if(pida_pdg == 211 || pida_pdg == 321 || pida_pdg == 2212) 
         recoparticle_list.push_back(Particle(pida_pdg, track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end));
+      else if(track.m_length < 30) 
+        recoparticle_list.push_back(Particle(2212, track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end));
       else
         recoparticle_list.push_back(Particle(EventSelectionTool::GetPdgByChi2(track), track.m_kinetic_energy, track.m_length, track.m_vertex, track.m_end)); 
     }
 
+    // If the muon was found by length, this will return
     if(mu_candidates.size() == 0) return;
     if(mu_candidates.size() == 1) {
       const Track &muon(track_list[mu_candidates[0]]);
       recoparticle_list.push_back(Particle(13, muon.m_kinetic_energy, muon.m_length, muon.m_vertex, muon.m_end));
       return;
     }
-   
+    
     // If more than one muon candidate exists
     bool foundOneMuon(false);
     unsigned int muonID = std::numeric_limits<unsigned int>::max();
@@ -279,7 +328,7 @@ namespace selection{
       unsigned int id = mu_candidates[i];
       const Track &candidate(track_list[id]);
 
-      if(candidate.m_pida*candidate.m_chi2_mu >= 5 && candidate.m_pida*candidate.m_chi2_mu < 9) {
+      if(longest_track_id == id && candidate.m_chi2_mu >= 0.25 && candidate.m_chi2_mu <= 4 && always_longest) {
       
         if(!foundOneMuon) {
           muonID = id;
@@ -293,7 +342,6 @@ namespace selection{
     }
     if(!foundOneMuon) {
     
-      float min_chi2 = std::numeric_limits<float>::max();
       unsigned int best_id  = std::numeric_limits<unsigned int>::max();
 
       for(unsigned int i = 0; i < mu_candidates.size(); ++i){
@@ -301,9 +349,9 @@ namespace selection{
         unsigned int id = mu_candidates[i];
         const Track &candidate(track_list[id]);
 
-        if(candidate.m_chi2_mu < min_chi2) {
-          best_id  = id;
-          min_chi2 = candidate.m_chi2_mu; 
+        if(id == longest_track_id) {
+          best_id = id;
+          break;
         }
       }
       muonID = best_id;
@@ -457,7 +505,27 @@ namespace selection{
     if(track.m_pida >= 13 && track.m_pida < 13.5) return 321;
   
     //Proton
-    if(track.m_pida >= 13.5 && track.m_pida < 21) return 2212;
+    if(track.m_pida >= 13) return 2212;
+
+    return std::numeric_limits<int>::max();
+  
+  }
+  
+  //------------------------------------------------------------------------------------------ 
+  
+  int EventSelectionTool::GetPdgByPIDAStrict(const Track &track){
+
+    // Muon
+    if(track.m_pida >= 7.5  && track.m_pida < 8) return 13;
+
+    //Pion
+    if(track.m_pida >= 8    && track.m_pida < 9) return 211;
+  
+    //Kaon
+    if(track.m_pida >= 12.9 && track.m_pida < 13.5) return 321;
+  
+    //Proton
+    if(track.m_pida >= 16.9 && track.m_pida < 17.4) return 2212;
 
     return std::numeric_limits<int>::max();
   

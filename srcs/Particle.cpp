@@ -30,11 +30,11 @@ namespace selection{
     
       // Set member variables
       m_mass            = this->GetMassFromPdg(pdg);
-      m_energy          = m_mass + kinetic_energy;
+      m_energy          = m_mass + kinetic_energy/double(1000);
       
       // Get the magnitude of the momentum
       double momentum_magnitude = sqrt(pow(m_energy,2) - pow(m_mass,2));
-      m_momentum = momentum_magnitude * (m_end - m_vertex);
+      m_momentum = momentum_magnitude * (m_end - m_vertex)*(1/double((m_end - m_vertex).Mag()));
 
     }
 
@@ -98,11 +98,38 @@ namespace selection{
 
   //------------------------------------------------------------------------------------------ 
   
+  float Particle::GetKineticEnergy() const{
+  
+    if(!m_has_calorimetry) throw 1;
+    
+    return m_energy - m_mass;
+
+  }
+
+  //------------------------------------------------------------------------------------------ 
+  
   float Particle::GetLength() const{
   
     return m_length;
 
   }
+
+  //------------------------------------------------------------------------------------------ 
+  
+  float Particle::GetAngle() const{
+  
+    if(!m_has_calorimetry) throw 1;
+    
+    TVector3 z;
+    z[0] = 0;
+    z[1] = 0;
+    z[2] = 1;
+
+    float p = m_momentum.Mag();
+    return ((1/p) * (m_momentum).Dot(z));
+    
+  }
+  
   //------------------------------------------------------------------------------------------ 
   
   TVector3 Particle::GetVertex() const{
@@ -143,4 +170,4 @@ namespace selection{
   }
 
     
-} // Selection
+} // selection

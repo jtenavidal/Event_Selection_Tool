@@ -28,7 +28,7 @@ namespace selection{
       typedef std::vector<Event>               EventList;
       typedef std::vector<Track>               TrackList;
       typedef std::vector<Shower>              ShowerList;
-
+      
       /**
        * @brief  load the list of events to analyse from the root file
        *
@@ -36,7 +36,7 @@ namespace selection{
        * @param  event_list vector of events to fill
        *
        */
-      static void LoadEventList(const std::string &file_name, EventList &event_list);
+      static void LoadEventList(const std::string &file_name, EventList &event_list, const unsigned int file_number);
 
     private : 
 
@@ -57,7 +57,7 @@ namespace selection{
        * @param  track_list vector of tracks to fill
        *
        */
-      static void GetTrackList(TTree *track_tree, const std::pair<int, int> &unique_event, TrackList &track_list);
+      static void GetTrackList(unsigned int start, TTree *track_tree, const std::pair<int, int> &unique_event, TrackList &track_list);
 
       /**
        * @brief  get the list of shower objects
@@ -67,7 +67,7 @@ namespace selection{
        * @param  shower_list vector of showers to fill
        *
        */
-      static void GetShowerList(TTree *shower_tree, const std::pair<int, int> &unique_event, ShowerList &shower_list);
+      static void GetShowerList(unsigned int start, TTree *shower_tree, const std::pair<int, int> &unique_event, ShowerList &shower_list);
       
       /**
        * @brief  get the list of mc particle objects
@@ -77,9 +77,8 @@ namespace selection{
        * @param  mc particle_list vector of mc particles to fill
        *
        */
-      static void GetMCParticleList(TTree *mcparticle_tree, const std::pair<int, int> &unique_event, ParticleList &mcparticle_list);
+      static void GetMCParticleList(unsigned int start, TTree *mcparticle_tree, const std::pair<int, int> &unique_event, ParticleList &mcparticle_list);
 
- 
       /**
        * @brief  get a list of reconstructed particles from track objects
        *
@@ -88,12 +87,11 @@ namespace selection{
        *
        */
       static void GetRecoParticleFromTrack(const TrackList &track_list, ParticleList &recoparticle_list);
-
+ 
       /**
-       * @brief  get a list of reconstructed particles from shower objects
+       * @brief  get a list of reconstructed particles from track objects using original method
        *
-       * @param  shower_list list of showers in the event
-       * @param  reco_vertex the reconstructed neutrino vertex
+       * @param  track_list list of tracks in the event
        * @param  recoparticle_list particle list to fill
        *
        */
@@ -120,8 +118,19 @@ namespace selection{
       static int GetPdgByPIDA(const Track &track);
       
       /**
+       * @brief  get the particle id based on its PIDA value with strict limits
+       *
+       * @param  track the track to find the pdg of
+       *
+       * @return pdg
+       *
+       */
+      static int GetPdgByPIDAStrict(const Track &track);
+      
+      /**
        * @brief  Track class 
        */
+
       class Track{
       
         public : 

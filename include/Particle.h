@@ -73,9 +73,19 @@ namespace selection{
       float GetEnergy() const;
 
       /**
+       * @brief  Get the kinetic energy
+       */
+      float GetKineticEnergy() const;
+
+      /**
        * @brief  Get the length
        */
       float GetLength() const;
+
+      /**
+       * @brief  Get the primary angle from the beam direction (positive z)
+       */
+      float GetAngle() const;
 
       /**
        * @brief  Get the vertex
@@ -115,5 +125,5 @@ namespace selection{
 
 
   }; // Particle
-} // Selection
+} // selection
 #endif
