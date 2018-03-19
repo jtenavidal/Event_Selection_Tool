@@ -83,11 +83,6 @@ namespace selection{
       float GetLength() const;
 
       /**
-       * @brief  Get the primary angle from the beam direction (positive z)
-       */
-      float GetAngle() const;
-
-      /**
        * @brief  Get the vertex
        */
       TVector3 GetVertex() const;
@@ -101,6 +96,11 @@ namespace selection{
        * @brief  Get the momentum
        */
       TVector3 GetMomentum() const;
+
+      /**
+       * @brief  Get the momentum module
+       */
+      float GetModuleMomentum() const;
 
       /**
        * @brief  Get whether the particle has calorimetry
@@ -125,5 +125,5 @@ namespace selection{
 
 
   }; // Particle
-} // selection
+} // Selection
 #endif

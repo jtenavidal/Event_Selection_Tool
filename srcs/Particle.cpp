@@ -15,8 +15,7 @@ namespace selection{
     m_end(end),
     m_momentum(momentum){
       m_length = sqrt(pow(end[0] - vertex[0], 2) + pow(end[1] - vertex[1], 2) + pow(end[0] - vertex[0], 2));
-      TVector3 u_z(0,0,1);
-      m_costheta = (m_end - m_vertex).Dot( u_z )/m_length ;
+
   }
 
   //------------------------------------------------------------------------------------------ 
@@ -30,11 +29,11 @@ namespace selection{
     
       // Set member variables
       m_mass            = this->GetMassFromPdg(pdg);
-      m_energy          = m_mass + kinetic_energy/double(1000);
+      m_energy          = m_mass + kinetic_energy/1000.;
       
       // Get the magnitude of the momentum
       double momentum_magnitude = sqrt(pow(m_energy,2) - pow(m_mass,2));
-      m_momentum = momentum_magnitude * (m_end - m_vertex)*(1/double((m_end - m_vertex).Mag()));
+      m_momentum = momentum_magnitude * (m_end - m_vertex)*(1/double((m_end-m_vertex).Mag()));
 
     }
 
@@ -102,10 +101,9 @@ namespace selection{
   
     if(!m_has_calorimetry) throw 1;
     
-    return m_energy - m_mass;
+    return m_energy-m_mass;
 
   }
-
   //------------------------------------------------------------------------------------------ 
   
   float Particle::GetLength() const{
@@ -113,23 +111,6 @@ namespace selection{
     return m_length;
 
   }
-
-  //------------------------------------------------------------------------------------------ 
-  
-  float Particle::GetAngle() const{
-  
-    if(!m_has_calorimetry) throw 1;
-    
-    TVector3 z;
-    z[0] = 0;
-    z[1] = 0;
-    z[2] = 1;
-
-    float p = m_momentum.Mag();
-    return ((1/p) * (m_momentum).Dot(z));
-    
-  }
-  
   //------------------------------------------------------------------------------------------ 
   
   TVector3 Particle::GetVertex() const{
@@ -155,6 +136,17 @@ namespace selection{
     return m_momentum;
 
   }
+  //------------------------------------------------------------------------------------------ 
+  
+  float Particle::GetModuleMomentum() const{
+ 
+    if(!m_has_calorimetry) throw 1;
+
+    return m_momentum.Mag();
+
+  }
+
+
 
   //------------------------------------------------------------------------------------------ 
   
@@ -165,9 +157,10 @@ namespace selection{
   }
 
   float Particle::GetCosTheta() const {
-    return m_costheta ;
+    TVector3 u_z(0,0,1);
+    return (m_end - m_vertex).Dot( u_z )/((m_end - m_vertex).Mag()) ; ;
 
   }
 
     
-} // selection
+} // Selection

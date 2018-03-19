@@ -36,7 +36,7 @@ namespace selection{
        * @param  event_list vector of events to fill
        *
        */
-      static void LoadEventList(const std::string &file_name, EventList &event_list, const unsigned int file_number);
+      static void LoadEventList(const std::string &file_name, EventList &event_list);
 
     private : 
 
