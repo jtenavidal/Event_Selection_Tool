@@ -606,16 +606,6 @@ std::cout<<"END LOOP"<<std::endl;
   c->SaveAs( (filepath+"h_Enu_MC_TReco.root").c_str() );
   c->Clear();
   leg->Clear();
-  // ------------------_HISTOGRAM Q2  cc1pi
-  h_Q_MC_TReco->SetTitle("");
-  h_Q_MC_TReco->GetXaxis()->SetTitle("Q^2 [GeV^2/c^4]");
-  h_Q_MC_TReco->GetYaxis()->SetTitle("Q^2((signal-true)/true)");
-  h_Q_MC_TReco->Draw("COL");
-  
-  c->Print( (filepath+"h_Q_MC_TReco.pdf").c_str() );
-  c->SaveAs( (filepath+"h_Q_MC_TReco.root").c_str() );
-  c->Clear();
-  leg->Clear();
 
 
   //----------------------------DELTA MASS HISTOGRAM
