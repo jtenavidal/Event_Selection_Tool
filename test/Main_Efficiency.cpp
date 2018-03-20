@@ -48,13 +48,13 @@ int MainTest(){
   TH1 * h_pi0_TReco_T   = new TH1D ( "h_pi0_TReco_T"  , " SIGNAL: pi0 track angle    "    , 20, -1.,  1.  );
   TH1 * h_pi0_Reco_T    = new TH1D ( "h_pi0_Reco_T"   , " SELECTED: pi0 track angle  "    , 20, -1.,  1.  );
 
-  TH1 * h_MC_E_mu       = new TH1D ( "h_MC_E_mu"      , " TRUE: E for mu             "    , 100,  0.,  1.5  );   
-  TH1 * h_TReco_E_mu    = new TH1D ( "h_TReco_E_mu"   , " SIGNAL: E for mu           "    , 100,  0.,  1.5  );  
-  TH1 * h_Reco_E_mu     = new TH1D ( "h_Reco_E_mu"    , " SELECTED: E for mu         "    , 100,  0.,  1.5  );   
+  TH1 * h_MC_E_mu       = new TH1D ( "h_MC_E_mu"      , " TRUE: E for mu             "    , 30,  0.,  1.5  );   
+  TH1 * h_TReco_E_mu    = new TH1D ( "h_TReco_E_mu"   , " SIGNAL: E for mu           "    , 30,  0.,  1.5  );  
+  TH1 * h_Reco_E_mu     = new TH1D ( "h_Reco_E_mu"    , " SELECTED: E for mu         "    , 30,  0.,  1.5  );   
   
-  TH1 * h_MC_E_pi       = new TH1D ( "h_MC_E_pi"      , " TRUE: E for pi             "    , 100,  0.,  1.5  );   
-  TH1 * h_TReco_E_pi    = new TH1D ( "h_TReco_E_pi"   , " SIGNAL: E for pi           "    , 100,  0.,  1.5  );  
-  TH1 * h_Reco_E_pi     = new TH1D ( "h_Reco_E_pi"    , " SELECTED: E for pi         "    , 100,  0.,  1.5  ); 
+  TH1 * h_MC_E_pi       = new TH1D ( "h_MC_E_pi"      , " TRUE: E for pi             "    , 30,  0.,  1.5  );   
+  TH1 * h_TReco_E_pi    = new TH1D ( "h_TReco_E_pi"   , " SIGNAL: E for pi           "    , 30,  0.,  1.5  );  
+  TH1 * h_Reco_E_pi     = new TH1D ( "h_Reco_E_pi"    , " SELECTED: E for pi         "    , 30,  0.,  1.5  ); 
 
   TH1 * h_MC_Delta      = new TH1D ( "h_MC_Delta"     ," TRUE: Delta mass            "    , 20 , 1.,  1.5 );   
   TH1 * h_TReco_Delta   = new TH1D ( "h_TReco_Delta"  , " SIGNAL: Delta mass         "    , 20, 0.,  1.5 );  
@@ -73,10 +73,10 @@ int MainTest(){
   TH1 * h_mu_Reco_nc_T    = new TH1D( "h_mu_Reco_nc_T","sthn"   , 20,-1.,1);
   
   THStack * hS_mu_Reco_E  = new THStack ( "hS_mu_Reco_E"    , "Reco: mu track angle "    );
-  TH1 * h_mu_Reco_cc0pi_E = new TH1D( "h_mu_Reco_cc0pi_E","sthn", 20,0.,3);
-  TH1 * h_mu_Reco_cc1pi_E = new TH1D( "h_mu_Reco_cc1pi_E","sthn", 20,0.,3);
-  TH1 * h_mu_Reco_ccpi0_E = new TH1D( "h_mu_Reco_ccpi0_E","sthn", 20,0.,3);
-  TH1 * h_mu_Reco_nc_E    = new TH1D( "h_mu_Reco_nc_E","sthn"   , 20,0.,3);
+  TH1 * h_mu_Reco_cc0pi_E = new TH1D( "h_mu_Reco_cc0pi_E","sthn", 30,0.,1.5);
+  TH1 * h_mu_Reco_cc1pi_E = new TH1D( "h_mu_Reco_cc1pi_E","sthn", 30,0.,1.5);
+  TH1 * h_mu_Reco_ccpi0_E = new TH1D( "h_mu_Reco_ccpi0_E","sthn", 30,0.,1.5);
+  TH1 * h_mu_Reco_nc_E    = new TH1D( "h_mu_Reco_nc_E","sthn"   , 30,0.,1.5);
 
   THStack * hS_pi_Reco_L   = new THStack ( "hS_pi_Reco_L"   , "Reco: pi track length "  );
   TH1 * h_pi_Reco_cc0pi_L  = new TH1D ( "h_pi_Reco_cc0pi_L" , "Reco: pi track length "    , 20, 0., 200.  );
@@ -91,10 +91,10 @@ int MainTest(){
   TH1 * h_pi_Reco_nc_T    = new TH1D( "h_pi_Reco_nc_T","sthn"   , 20,-1.,1);
   
   THStack * hS_pi_Reco_E  = new THStack ( "hS_pi_Reco_E"    , "Reco: pi track angle "    );
-  TH1 * h_pi_Reco_cc0pi_E = new TH1D( "h_pi_Reco_cc0pi_E","sthn", 100,0.,1.5);
-  TH1 * h_pi_Reco_cc1pi_E = new TH1D( "h_pi_Reco_cc1pi_E","sthn", 100,0.,1.5);
-  TH1 * h_pi_Reco_ccpi0_E = new TH1D( "h_pi_Reco_ccpi0_E","sthn", 100,0.,1.5);
-  TH1 * h_pi_Reco_nc_E    = new TH1D( "h_pi_Reco_nc_E","sthn"   , 100,0.,1.5);
+  TH1 * h_pi_Reco_cc0pi_E = new TH1D( "h_pi_Reco_cc0pi_E","sthn", 30,0.,1.5);
+  TH1 * h_pi_Reco_cc1pi_E = new TH1D( "h_pi_Reco_cc1pi_E","sthn", 30,0.,1.5);
+  TH1 * h_pi_Reco_ccpi0_E = new TH1D( "h_pi_Reco_ccpi0_E","sthn", 30,0.,1.5);
+  TH1 * h_pi_Reco_nc_E    = new TH1D( "h_pi_Reco_nc_E","sthn"   , 30,0.,1.5);
 
   THStack * hS_pi0_Reco_L   = new THStack ( "hS_pi0u_Reco_L"  , "Reco: pi0 track length "  );
   TH1 * h_pi0_Reco_cc0pi_L  = new TH1D ( "h_pi0_Reco_cc0pi_L" , "Reco: pi0 track length "    , 20, 0., 200.  );
@@ -207,7 +207,8 @@ int MainTest(){
 	 if( topology == e.signal_map_cc_1pi && e.GetRecoKineticEnergyWithPdg( 211 )!=0 && e.GetMCKineticEnergyWithPdg( 211 )!=0 && e.GetRecoCC1piNeutrinoEnergy()>0 ){
 	   h_R_E_pi->Fill( ( e.GetRecoKineticEnergyWithPdg( 211 )- e.GetMCKineticEnergyWithPdg( 211 )) / e.GetMCKineticEnergyWithPdg( 211 ) );}
  	  
-       }}
+       }
+     }
     }
 
     if( e.CheckRecoTopology( topology ) == 1) { 
@@ -338,8 +339,6 @@ std::cout<<"END LOOP"<<std::endl;
   h_mu_Reco_L->GetXaxis()->SetTitleFont(43);
   h_mu_Reco_L->GetXaxis()->SetLabelFont(43);
   h_mu_Reco_L->GetXaxis()->SetLabelSize(15);
-  h_mu_Reco_L->GetXaxis()->SetRangeUser(0.,500.);
-  h_mu_Reco_L->GetYaxis()->SetRangeUser(0.,200.);
   h_mu_Reco_L->SetTitle("") ;
   h_mu_Reco_L-> Draw();
 
@@ -359,8 +358,6 @@ std::cout<<"END LOOP"<<std::endl;
   h_mu_TReco_L->SetFillStyle(3144);
   h_mu_TReco_L-> SetStats(0);
   leg -> AddEntry( h_mu_TReco_L , " Signal: <L>=116.4 " );
-  h_mu_TReco_L->GetXaxis()->SetRangeUser(0.,500.);
-  h_mu_TReco_L->GetYaxis()->SetRangeUser(0.,200.);
   h_mu_TReco_L->SetTitle("") ;
   h_mu_TReco_L-> Draw("same");
   TLatex *latex= new TLatex();
@@ -394,9 +391,7 @@ std::cout<<"END LOOP"<<std::endl;
   h_pi_Reco_L->GetXaxis()->SetTitleFont(43);
   h_pi_Reco_L->GetXaxis()->SetLabelFont(43);
   h_pi_Reco_L->GetXaxis()->SetLabelSize(15);
-  h_pi_Reco_L->GetXaxis()->SetRangeUser(0.,350.);
   h_pi_Reco_L->SetTitle("");
-  h_pi_Reco_L->GetYaxis()->SetRangeUser(0.,350.);
   h_pi_Reco_L-> Draw("same");
 
   leg -> AddEntry( h_pi_Reco_L , " Selected: <L>=24.4 " );
@@ -406,8 +401,6 @@ std::cout<<"END LOOP"<<std::endl;
   h_pi_TReco_L->SetFillStyle(3144);
   h_pi_TReco_L-> SetStats(0);
   leg -> AddEntry( h_pi_TReco_L , " Signal: <L>=30.7 " );
-  h_pi_TReco_L->GetXaxis()->SetRangeUser(0.,500.);
-  h_pi_TReco_L->GetYaxis()->SetRangeUser(0.,350.);
   h_pi_TReco_L->SetTitle("") ;
   h_pi_TReco_L-> Draw("same");
   leg -> Draw();
@@ -431,7 +424,6 @@ std::cout<<"END LOOP"<<std::endl;
   h_mu_Reco_T->GetXaxis()->SetLabelFont(43);
   h_mu_Reco_T->GetXaxis()->SetLabelSize(15);
   h_mu_Reco_T->SetTitle("");
-  h_mu_Reco_T->GetYaxis()->SetRangeUser(0.,250.);
   h_mu_Reco_T-> Draw();
   h_mu_MC_T->GetYaxis()->SetTitle("Events [#]");
   h_mu_MC_T->GetXaxis()->SetTitle("cos(theta)");
@@ -460,10 +452,8 @@ std::cout<<"END LOOP"<<std::endl;
   //-------------------HISTO 4
   h_pi_MC_T->GetYaxis()->SetTitle("Events [#]");
   h_pi_MC_T->GetXaxis()->SetTitle("cos(theta)");
-  h_pi_MC_T->GetYaxis()->SetRangeUser(0.,250.);
   h_pi_MC_T->SetLineColor(kBlack);
   h_pi_MC_T-> SetStats(0);
-  h_pi_MC_T->GetYaxis()->SetRangeUser(0.,120.);
   h_pi_MC_T->SetLineWidth(1);
   h_pi_MC_T->SetTitle("") ;
   leg -> AddEntry( h_pi_MC_T , " True " );
@@ -501,19 +491,16 @@ std::cout<<"END LOOP"<<std::endl;
   //---------------HISTO ENERGY
   h_Reco_E_mu->SetLineColor(kRed);
   h_Reco_E_mu-> SetStats(0);
-  h_Reco_E_mu->GetYaxis()->SetRangeUser(0.,350.);
   h_Reco_E_mu->SetTitle("");
   h_Reco_E_mu->GetXaxis()->SetTitle("T/GeV");
   h_Reco_E_mu->Draw( );
   h_MC_E_mu->GetYaxis()->SetTitle("Events [#]");
   h_MC_E_mu->SetLineColor(kBlack);
   h_MC_E_mu-> SetStats(0);
-  h_MC_E_mu->GetXaxis()->SetRangeUser(0.,3.);
   h_MC_E_mu->SetLineWidth(1);
   h_MC_E_mu->SetTitle("") ;
   h_MC_E_mu->GetXaxis()->SetTitle("T/GeV");
   leg -> AddEntry( h_MC_E_mu , " True: <T>=0.48 " );
-  h_MC_E_mu->GetYaxis()->SetRangeUser(0.,350.);
   h_MC_E_mu->Draw("same");
   leg -> AddEntry( h_Reco_E_mu , " Selected: <T>=0.34 " );
   h_TReco_E_mu->SetFillColor( 8 );
@@ -527,7 +514,6 @@ std::cout<<"END LOOP"<<std::endl;
   h_TReco_E_mu->GetXaxis()->SetTitleFont(43);
   h_TReco_E_mu->GetXaxis()->SetLabelFont(43);
   h_TReco_E_mu->GetXaxis()->SetLabelSize(15);
-  h_TReco_E_mu->GetYaxis()->SetRangeUser(0.,350.);
   h_TReco_E_mu->SetTitle("");
   h_TReco_E_mu->GetXaxis()->SetTitle("T/GeV");
   h_TReco_E_mu->GetYaxis()->SetTitle("Event Rate [a.u]");
@@ -549,7 +535,6 @@ std::cout<<"END LOOP"<<std::endl;
   h_MC_E_pi->SetLineColor(kBlack);
   h_MC_E_pi-> SetStats(0);
   h_MC_E_pi->SetLineWidth(1);
-  h_MC_E_pi->GetXaxis()->SetRangeUser(0.,3.);
   h_MC_E_pi->SetTitle("") ;
   leg -> AddEntry( h_MC_E_pi , " True: <T>=0.22 " );
   h_MC_E_pi->Draw("same");
@@ -641,7 +626,6 @@ std::cout<<"END LOOP"<<std::endl;
   h_TReco_Delta->GetXaxis()->SetTitleFont(43);
   h_TReco_Delta->GetXaxis()->SetLabelFont(43);
   h_TReco_Delta->GetXaxis()->SetLabelSize(15);
-  h_TReco_Delta->GetYaxis()->SetRangeUser(0.,150.);
   h_TReco_Delta->Scale(100/CountMC[3]);
   h_TReco_Delta ->Draw("same");
   leg6 -> AddEntry( h_MC_Delta  , " True " );
