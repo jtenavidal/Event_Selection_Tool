@@ -217,16 +217,6 @@ ts
        */
       float GetRecoModuleMomentumWithPdg(const int pdg) const;
       /**                                                              
-       * @brief Returns the MC momentum transfer for cc1pi     
-       * @param pdg                        
-       */
-      float GetMCQ2WithPdg_cc1pi(const int pdg) const;
-      /**                                                              
-       * @brief Returns the Reco momentum transfer for cc1pi     
-       * @param pdg                        
-       */
-      float GetRecoQ2WithPdg_cc1pi(const int pdg) const;
-      /**                                                              
        * @brief Returns MC Energy of the particle with longest track for cc1p                         
        */
       float GetMCEnergyLongest_cc1pi( ) const;

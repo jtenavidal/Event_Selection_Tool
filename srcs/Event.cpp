@@ -471,19 +471,6 @@ namespace selection{
     return 0.;
  }
 
- //------------------------------------------------------------------------------------------------
-
-
-  float Event::GetMCQ2WithPdg_cc1pi(const int pdg) const{
-    return -( GetMCModuleMomentumWithPdg( 13 )-GetMCModuleMomentumWithPdg( 211 ))*(GetMCModuleMomentumWithPdg( 13 )-GetMCModuleMomentumWithPdg( 211 ));
-  }
-
-  //------------------------------------------------------------------------------------------------
-
-
-  float Event::GetRecoQ2WithPdg_cc1pi(const int pdg) const{
-    return -( GetRecoModuleMomentumWithPdg( 13 )-GetRecoModuleMomentumWithPdg( 211 ))*(GetRecoModuleMomentumWithPdg( 13 )-GetRecoModuleMomentumWithPdg( 211 ));
-  }
 
   //-----------------------------------------------------------------------------------------------
 
@@ -877,7 +864,7 @@ namespace selection{
   
   double Event::Efficiency( const std::vector< double > & CountMC, const std::vector< double > & CountTReco, const std::vector< double > & CountReco, const TopologyMap &topology  ) const {
    ofstream rfile ;
-   rfile.open( "results.txt" ) ;
+   rfile.open( "~/Desktop/Output_Selection_Tool/results.txt" ) ;
 
    for( int i = 0; i<5; ++i ){
     rfile << "__________________________________________________________"                                                     << "\n";
@@ -904,7 +891,7 @@ namespace selection{
 
   void Event::SaveTopologyMatrix( const ParticleMatrix & Count_MC_Topology, const ParticleMatrix & Count_TReco_Topology, const ParticleMatrix & Count_Reco_Topology ) const {
    ofstream TMfile ;
-   TMfile.open( "TopologyMatrix.txt" ) ;
+   TMfile.open( "~/Desktop/Output_Selection_Tool/TopologyMatrix.txt" ) ;
     TMfile                                                                                                                       << "\n";
     TMfile << "____________________________________________________________"                                                     << "\n";
     TMfile                                                                                                                       << "\n";

@@ -123,17 +123,14 @@ int MainTest(){
   //
   TH2 * h_E_pi_MC_TReco = new TH2D ( "h_E_pi_MC_TReco", " TE Signal vs True          "    , 20,  0., 3., 20, -1., 1. );
   TH2 * h_Enu_MC_TReco = new TH2D ( "h_Enu_MC_TReco", " TE Signal vs True          "    , 20,  0., 3., 20, -1., 1. );
-  TH2 * h_Q_MC_TReco  = new TH2D ( "h_Q_MC_TReco", " TE Signal vs True          "    , 20,  -1., 1., 20, -1., 1. );
   TH1 * h_R_E_mu        = new TH1D ( "h_MC_E_mu_R"    , " T((Signal - True )/True)   "    , 20,  -1., 1. );   
   TH1 * h_R_E_pi        = new TH1D ( "h_MC_E_pi_R"    , " T((Signal - True )/True)   "    , 20,  -1., 1. ); 
   //
 
   ofstream efile, lfile, afile ;
-  efile.open( "event_information.txt" ) ;
-  lfile.open( "length_information_per_event.txt" ) ;
-  afile.open( "angular_information_per_event.txt" );
-  float RecoEPi = 0;
-  double count_mis_E_Reco=0, count_mis_E_TReco=0;
+  efile.open( "~/Desktop/Output_Selection_Tool/event_information.txt" ) ;
+  lfile.open( "~/Desktop/Output_Selection_Tool/length_information_per_event.txt" ) ;
+  afile.open( "~/Desktop/Output_Selection_Tool/angular_information_per_event.txt" );
   //Initialise event list and the topology maps
   
   EventSelectionTool::EventList events;
@@ -156,7 +153,7 @@ int MainTest(){
     EventSelectionTool::LoadEventList(file_name, events);
     }
   // Histograms directory :
-    std::string filepath = "~/Desktop/SBND_Selection_Tool/plots/";//"~/Desktop/SBND_Selection_Tool/plots_cc0pi/";//
+    std::string filepath = "/Desktop/Output_Selection_Tool/cc1pi";
 
   for(unsigned int i = 0; i < events.size(); ++i){
     //---------------------------- Do analysis---------------------------------------------
@@ -165,8 +162,8 @@ int MainTest(){
     TopologyMap topology= e.signal_map_cc_1pi;//e.signal_map_cc_0pi;//
 
     // ----------------------------Save Event Information----------------------------------
-    e.EventInformationParticles( "event_information.txt" , i );
-    e.EventProperties( topology , "event_properties",  i );
+    e.EventInformationParticles( "~/Desktop/Output_Selection_Tool/event_information.txt" , i );
+    e.EventProperties( topology , "~/Desktop/Output_Selection_Tool/event_properties",  i );
     // ----------------------------Eficiency calculation values----------------------------
 
     e.Count_per_Topology( e.signal_map_NC           , CountMC[0], CountTReco[0], CountReco[0] );
@@ -194,7 +191,7 @@ int MainTest(){
       if( topology == e.signal_map_cc_1pi ) h_MC_Delta -> Fill( e.GetMCDeltaEnergy() );
 
      if( e.CheckRecoTopology( topology ) == 1 ) {
-       if( e.CheckRecoTopology( e.signal_map_cc_pi0 ) == 1 && e.GetRecoCC0piNeutrinoEnergy()<0 ){}else if(e.CheckRecoTopology( e.signal_map_cc_1pi ) == 1 && e.GetRecoCC1piNeutrinoEnergy()<0 ){std::cout<<"cucu";} else{
+       if( e.CheckRecoTopology( e.signal_map_cc_pi0 ) == 1 && e.GetRecoCC0piNeutrinoEnergy()<0 ){}else if(e.CheckRecoTopology( e.signal_map_cc_1pi ) == 1 && e.GetRecoCC1piNeutrinoEnergy()<0 ){} else{
 	 if( topology != e.signal_map_NC     && e.GetRecoLengthWithPdg( 13   ) != 0 ) h_mu_TReco_L -> Fill( e.GetRecoLengthWithPdg( 13 )   );
 	 if( topology == e.signal_map_cc_1pi && e.GetRecoLengthWithPdg( 211  ) != 0 && e.GetRecoCC1piNeutrinoEnergy()>0 ) h_pi_TReco_L -> Fill( e.GetRecoLengthWithPdg( 211 )  );
 	 if( topology == e.signal_map_cc_pi0 && e.GetRecoLengthWithPdg( 111  ) != 0 ) h_pi0_TReco_L-> Fill( e.GetRecoLengthWithPdg( 111 )  );
@@ -209,8 +206,7 @@ int MainTest(){
 	   h_R_E_mu->Fill( ( e.GetRecoKineticEnergyWithPdg( 13 )- e.GetMCKineticEnergyWithPdg( 211 )) / e.GetMCKineticEnergyWithPdg( 13 ) );	 }
 	 if( topology == e.signal_map_cc_1pi && e.GetRecoKineticEnergyWithPdg( 211 )!=0 && e.GetMCKineticEnergyWithPdg( 211 )!=0 && e.GetRecoCC1piNeutrinoEnergy()>0 ){
 	   h_R_E_pi->Fill( ( e.GetRecoKineticEnergyWithPdg( 211 )- e.GetMCKineticEnergyWithPdg( 211 )) / e.GetMCKineticEnergyWithPdg( 211 ) );}
- 	  if( topology == e.signal_map_cc_1pi && e.GetRecoKineticEnergyWithPdg( 211 )!=0  && e.GetRecoCC1piNeutrinoEnergy()>0 ){
-	    h_Q_MC_TReco->Fill( e.GetMCQ2WithPdg_cc1pi( 13) ,  (e.GetRecoQ2WithPdg_cc1pi( 13)-e.GetMCQ2WithPdg_cc1pi( 13) )/  e.GetMCQ2WithPdg_cc1pi( 13) );}
+ 	  
        }}
     }
 
@@ -498,7 +494,7 @@ std::cout<<"END LOOP"<<std::endl;
   h_pi_TReco_T-> Draw("same");
   leg -> Draw();
   c->Print( (filepath+"h_pi_ALL_T.pdf").c_str() );
-  c->SaveAs( (filepath+"~/Desktop/Event_Selection_Tool/hist_output/test/h_pi_ALL_T.root").c_str() );
+  c->SaveAs( (filepath+"h_pi_ALL_T.root").c_str() );
   c->Clear();
   leg->Clear();
   //---------------------------HISTO 5  
