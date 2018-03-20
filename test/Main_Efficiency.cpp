@@ -153,7 +153,7 @@ int MainTest(){
     EventSelectionTool::LoadEventList(file_name, events);
     }
   // Histograms directory :
-    std::string filepath = "/Desktop/Output_Selection_Tool/cc1pi";
+    std::string filepath = "~/Desktop/Output_Selection_Tool/cc1pi/";
 
   for(unsigned int i = 0; i < events.size(); ++i){
     //---------------------------- Do analysis---------------------------------------------
