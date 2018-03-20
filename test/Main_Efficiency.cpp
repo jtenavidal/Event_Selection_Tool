@@ -48,13 +48,13 @@ int MainTest(){
   TH1 * h_pi0_TReco_T   = new TH1D ( "h_pi0_TReco_T"  , " SIGNAL: pi0 track angle    "    , 20, -1.,  1.  );
   TH1 * h_pi0_Reco_T    = new TH1D ( "h_pi0_Reco_T"   , " SELECTED: pi0 track angle  "    , 20, -1.,  1.  );
 
-  TH1 * h_MC_E_mu       = new TH1D ( "h_MC_E_mu"      , " TRUE: E for mu             "    , 100,  0.,  3.  );   
-  TH1 * h_TReco_E_mu    = new TH1D ( "h_TReco_E_mu"   , " SIGNAL: E for mu           "    , 100,  0.,  3.  );  
-  TH1 * h_Reco_E_mu     = new TH1D ( "h_Reco_E_mu"    , " SELECTED: E for mu         "    , 100,  0.,  3.  );   
+  TH1 * h_MC_E_mu       = new TH1D ( "h_MC_E_mu"      , " TRUE: E for mu             "    , 100,  0.,  1.5  );   
+  TH1 * h_TReco_E_mu    = new TH1D ( "h_TReco_E_mu"   , " SIGNAL: E for mu           "    , 100,  0.,  1.5  );  
+  TH1 * h_Reco_E_mu     = new TH1D ( "h_Reco_E_mu"    , " SELECTED: E for mu         "    , 100,  0.,  1.5  );   
   
-  TH1 * h_MC_E_pi       = new TH1D ( "h_MC_E_pi"      , " TRUE: E for pi             "    , 100,  0.,  3.  );   
-  TH1 * h_TReco_E_pi    = new TH1D ( "h_TReco_E_pi"   , " SIGNAL: E for pi           "    , 100,  0.,  3.  );  
-  TH1 * h_Reco_E_pi     = new TH1D ( "h_Reco_E_pi"    , " SELECTED: E for pi         "    , 100,  0.,  3.  ); 
+  TH1 * h_MC_E_pi       = new TH1D ( "h_MC_E_pi"      , " TRUE: E for pi             "    , 100,  0.,  1.5  );   
+  TH1 * h_TReco_E_pi    = new TH1D ( "h_TReco_E_pi"   , " SIGNAL: E for pi           "    , 100,  0.,  1.5  );  
+  TH1 * h_Reco_E_pi     = new TH1D ( "h_Reco_E_pi"    , " SELECTED: E for pi         "    , 100,  0.,  1.5  ); 
 
   TH1 * h_MC_Delta      = new TH1D ( "h_MC_Delta"     ," TRUE: Delta mass            "    , 20 , 1.,  1.5 );   
   TH1 * h_TReco_Delta   = new TH1D ( "h_TReco_Delta"  , " SIGNAL: Delta mass         "    , 20, 0.,  1.5 );  
@@ -91,10 +91,10 @@ int MainTest(){
   TH1 * h_pi_Reco_nc_T    = new TH1D( "h_pi_Reco_nc_T","sthn"   , 20,-1.,1);
   
   THStack * hS_pi_Reco_E  = new THStack ( "hS_pi_Reco_E"    , "Reco: pi track angle "    );
-  TH1 * h_pi_Reco_cc0pi_E = new TH1D( "h_pi_Reco_cc0pi_E","sthn", 20,0.,3);
-  TH1 * h_pi_Reco_cc1pi_E = new TH1D( "h_pi_Reco_cc1pi_E","sthn", 20,0.,3);
-  TH1 * h_pi_Reco_ccpi0_E = new TH1D( "h_pi_Reco_ccpi0_E","sthn", 20,0.,3);
-  TH1 * h_pi_Reco_nc_E    = new TH1D( "h_pi_Reco_nc_E","sthn"   , 20,0.,3);
+  TH1 * h_pi_Reco_cc0pi_E = new TH1D( "h_pi_Reco_cc0pi_E","sthn", 100,0.,1.5);
+  TH1 * h_pi_Reco_cc1pi_E = new TH1D( "h_pi_Reco_cc1pi_E","sthn", 100,0.,1.5);
+  TH1 * h_pi_Reco_ccpi0_E = new TH1D( "h_pi_Reco_ccpi0_E","sthn", 100,0.,1.5);
+  TH1 * h_pi_Reco_nc_E    = new TH1D( "h_pi_Reco_nc_E","sthn"   , 100,0.,1.5);
 
   THStack * hS_pi0_Reco_L   = new THStack ( "hS_pi0u_Reco_L"  , "Reco: pi0 track length "  );
   TH1 * h_pi0_Reco_cc0pi_L  = new TH1D ( "h_pi0_Reco_cc0pi_L" , "Reco: pi0 track length "    , 20, 0., 200.  );
@@ -134,7 +134,7 @@ int MainTest(){
   //Initialise event list and the topology maps
   
   EventSelectionTool::EventList events;
-  for( unsigned int i = 0; i < 398; ++i ){
+  for( unsigned int i = 0; i < 500; ++i ){
   
     // Get the filename for each 2D histogram
     std::stringstream ss;
@@ -145,7 +145,7 @@ int MainTest(){
     
     char file_name[1024];
     
-    ss << "/hepstore/rjones/Samples/FNAL/analysis_trees/all/3486578_" << i <<"/output_file.root";
+    ss << "/hepstore/rjones/Samples/FNAL/sbn_workshop_0318/5103689_" << i <<"/output_file.root";
     name = ss.str();
             
     strcpy( file_name, name.c_str() );
