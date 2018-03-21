@@ -128,9 +128,9 @@ int MainTest(){
   //
 
   ofstream efile, lfile, afile ;
-  efile.open( "~/Desktop/Output_Selection_Tool/event_information.txt" ) ;
-  lfile.open( "~/Desktop/Output_Selection_Tool/length_information_per_event.txt" ) ;
-  afile.open( "~/Desktop/Output_Selection_Tool/angular_information_per_event.txt" );
+  efile.open( "event_information.txt" ) ;
+  lfile.open( "length_information_per_event.txt" ) ;
+  afile.open( "Angular_information_per_event.txt" );
   //Initialise event list and the topology maps
   
   EventSelectionTool::EventList events;
@@ -153,17 +153,17 @@ int MainTest(){
     EventSelectionTool::LoadEventList(file_name, events);
     }
   // Histograms directory :
-    std::string filepath = "~/Desktop/Output_Selection_Tool/cc1pi/";
+    std::string filepath = "~/Desktop/Output_Selection_Tool/cc0pi/";
 
   for(unsigned int i = 0; i < events.size(); ++i){
     //---------------------------- Do analysis---------------------------------------------
     Event &e(events[i]);
     e.SetTopologies();
-    TopologyMap topology= e.signal_map_cc_1pi;//e.signal_map_cc_0pi;//
+    TopologyMap topology=e.signal_map_cc_0pi;//e.signal_map_cc_1pi;
 
     // ----------------------------Save Event Information----------------------------------
-    e.EventInformationParticles( "~/Desktop/Output_Selection_Tool/event_information.txt" , i );
-    e.EventProperties( topology , "~/Desktop/Output_Selection_Tool/event_properties",  i );
+    e.EventInformationParticles( "event_information.txt" , i );
+    e.EventProperties( topology , "event_properties",  i );
     // ----------------------------Eficiency calculation values----------------------------
 
     e.Count_per_Topology( e.signal_map_NC           , CountMC[0], CountTReco[0], CountReco[0] );
@@ -174,7 +174,7 @@ int MainTest(){
     
     //--------------------- TOPOLOGY MIS IDENTIFICATION : TOPOLOGY MATRIX -----------------
     e.TopologyMatrix( Count_MC_Topology, Count_TReco_Topology, Count_Reco_Topology );
-    
+    e.SaveTopologyMatrix( Count_MC_Topology, Count_TReco_Topology, Count_Reco_Topology );
     //--------------------- Events vs Length, Angle and Kinetic Energy   ------------------
     if( e.CheckMCTopology( topology ) == 1 ) { 
 
@@ -647,54 +647,63 @@ std::cout<<"END LOOP"<<std::endl;
   h_mu_Reco_ccpi0_L->SetFillStyle(3004);
   h_mu_Reco_nc_L->SetFillStyle(3004);
   
-  hS_mu_Reco_L->Add(h_mu_Reco_cc1pi_L);
+  //hS_mu_Reco_L->Add(h_mu_Reco_cc1pi_L);
   hS_mu_Reco_L->Add(h_mu_Reco_cc0pi_L);
+  //
+  hS_mu_Reco_L->Add(h_mu_Reco_cc1pi_L);
+  //
   hS_mu_Reco_L->Add(h_mu_Reco_ccpi0_L);
   hS_mu_Reco_L->Add(h_mu_Reco_nc_L);
-
-  leg1->AddEntry(h_mu_Reco_cc1pi_L, "Signal");
-  leg1->AddEntry(h_mu_Reco_cc0pi_L, "BG: CC0#pi");
+  // leg1->AddEntry(h_mu_Reco_cc1pi_L, "Signal");
+  leg1->AddEntry(h_mu_Reco_cc0pi_L, "SIGNAL CC0#pi");
+  leg1->AddEntry(h_mu_Reco_cc1pi_L, "BG: CC1#pi+/-");
   leg1->AddEntry(h_mu_Reco_ccpi0_L, "BG: CC1#pi0");
   leg1->AddEntry(h_mu_Reco_nc_L,    "BG: other");
 
   TLegend *leg22 = new TLegend(0.9,0.7,0.48,0.9);
-  h_mu_Reco_cc1pi_T->SetFillColor(kGreen);
-  h_mu_Reco_cc0pi_T->SetFillColor(kRed);
+  h_mu_Reco_cc1pi_T->SetFillColor(kRed);
+  h_mu_Reco_cc0pi_T->SetFillColor(kGreen);
   h_mu_Reco_ccpi0_T->SetFillColor(kBlue);
   h_mu_Reco_nc_T->SetFillColor(kOrange);
 
-  h_mu_Reco_cc0pi_T->SetFillStyle(3004);
+  //h_mu_Reco_cc0pi_T->SetFillStyle(3004);
+  h_mu_Reco_cc1pi_T->SetFillStyle(3004);
   h_mu_Reco_ccpi0_T->SetFillStyle(3004);
   h_mu_Reco_nc_T->SetFillStyle(3004);
   
-  hS_mu_Reco_T->Add(h_mu_Reco_cc1pi_T);
+  //  hS_mu_Reco_T->Add(h_mu_Reco_cc1pi_T);
+  
   hS_mu_Reco_T->Add(h_mu_Reco_cc0pi_T);
+  hS_mu_Reco_T->Add(h_mu_Reco_cc1pi_T);
   hS_mu_Reco_T->Add(h_mu_Reco_ccpi0_T);
   hS_mu_Reco_T->Add(h_mu_Reco_nc_T);
  
 
-  leg22->AddEntry(h_mu_Reco_cc1pi_T, "Signal");
-  leg22->AddEntry(h_mu_Reco_cc0pi_T, "BG: CC0#pi");
+  leg22->AddEntry(h_mu_Reco_cc0pi_T, "Signal: CC0#pi");
+  leg22->AddEntry(h_mu_Reco_cc1pi_T, "BG: CC1#pi+/-");
   leg22->AddEntry(h_mu_Reco_ccpi0_T, "BG: CC#pi0");
   leg22->AddEntry(h_mu_Reco_nc_T,    "BG: other");
 
   TLegend *leg33 = new TLegend(0.9,0.7,0.48,0.9);
-  h_mu_Reco_cc1pi_E->SetFillColor(kGreen);
-  h_mu_Reco_cc0pi_E->SetFillColor(kRed);
+  //  h_mu_Reco_cc1pi_E->SetFillColor(kGreen);
+  h_mu_Reco_cc1pi_E->SetFillColor(kRed);
+  h_mu_Reco_cc0pi_E->SetFillColor(kGreen);
   h_mu_Reco_ccpi0_E->SetFillColor(kBlue);
   h_mu_Reco_nc_E->SetFillColor(kOrange);
   
 
-  h_mu_Reco_cc0pi_E->SetFillStyle(3004);
+  //h_mu_Reco_cc0pi_E->SetFillStyle(3004);
+  h_mu_Reco_cc1pi_E->SetFillStyle(3004);
   h_mu_Reco_ccpi0_E->SetFillStyle(3004);
   h_mu_Reco_nc_E->SetFillStyle(3004);
-  hS_mu_Reco_E->Add(h_mu_Reco_cc1pi_E);
+  //hS_mu_Reco_E->Add(h_mu_Reco_cc1pi_E);
   hS_mu_Reco_E->Add(h_mu_Reco_cc0pi_E);
+  hS_mu_Reco_E->Add(h_mu_Reco_cc1pi_E);
   hS_mu_Reco_E->Add(h_mu_Reco_ccpi0_E);
   hS_mu_Reco_E->Add(h_mu_Reco_nc_E);
  
-  leg33->AddEntry(h_mu_Reco_cc1pi_E, "Signal");
-  leg33->AddEntry(h_mu_Reco_cc0pi_E, "BG: CC0#pi");
+  leg33->AddEntry(h_mu_Reco_cc0pi_E, "Signal");
+  leg33->AddEntry(h_mu_Reco_cc1pi_E, "BG: CC1#pi+/-");
   leg33->AddEntry(h_mu_Reco_ccpi0_E, "BG: CC#pi0");
   leg33->AddEntry(h_mu_Reco_nc_E,    "BG: other");
 

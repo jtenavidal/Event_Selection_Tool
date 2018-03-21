@@ -864,7 +864,7 @@ namespace selection{
   
   double Event::Efficiency( const std::vector< double > & CountMC, const std::vector< double > & CountTReco, const std::vector< double > & CountReco, const TopologyMap &topology  ) const {
    ofstream rfile ;
-   rfile.open( "~/Desktop/Output_Selection_Tool/results.txt" ) ;
+   rfile.open( "results.txt" ) ;
 
    for( int i = 0; i<5; ++i ){
     rfile << "__________________________________________________________"                                                     << "\n";
@@ -891,7 +891,7 @@ namespace selection{
 
   void Event::SaveTopologyMatrix( const ParticleMatrix & Count_MC_Topology, const ParticleMatrix & Count_TReco_Topology, const ParticleMatrix & Count_Reco_Topology ) const {
    ofstream TMfile ;
-   TMfile.open( "~/Desktop/Output_Selection_Tool/TopologyMatrix.txt" ) ;
+   TMfile.open( "TopologyMatrix.txt" ) ;
     TMfile                                                                                                                       << "\n";
     TMfile << "____________________________________________________________"                                                     << "\n";
     TMfile                                                                                                                       << "\n";
